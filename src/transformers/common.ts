@@ -12,7 +12,18 @@ export const createPaginationAndSort = (
   const from = input.from;
   const size = input.size;
 
-  if (typeof size === "number") query.per_page = size;
+  if (typeof size === "number") {
+    // Typesense has a maximum limit of 250 for per_page
+    const maxPerPage = 250;
+    if (size > maxPerPage) {
+      warnings.push(
+        `Reducing page size from ${size} to ${maxPerPage} (Typesense limit)`
+      );
+      query.per_page = maxPerPage;
+    } else {
+      query.per_page = size;
+    }
+  }
   if (typeof from === "number" && typeof size === "number") {
     query.page = Math.floor(from / size) + 1;
   }

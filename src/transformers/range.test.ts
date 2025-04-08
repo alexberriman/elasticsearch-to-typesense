@@ -44,10 +44,10 @@ describe("transformRange", () => {
 
     const result = transformRange(query, ctx);
 
-    expect(result.query.filter_by).toContain("mapped_field:>10");
-    expect(result.query.filter_by).toContain("mapped_field:<20");
-    expect(result.query.filter_by).toContain("mapped_field:>=5");
-    expect(result.query.filter_by).toContain("mapped_field:<=25");
+    expect(result.query.filter_by).toContain("mapped_field:> 10");
+    expect(result.query.filter_by).toContain("mapped_field:< 20");
+    expect(result.query.filter_by).toContain("mapped_field:>= 5");
+    expect(result.query.filter_by).toContain("mapped_field:<= 25");
     expect(result.warnings).toEqual([]);
   });
 
@@ -146,8 +146,8 @@ describe("transformRange", () => {
 
     const result = transformRange(query, ctx);
 
-    expect(result.query.filter_by).toContain("mapped_field:>=2022-01-01");
-    expect(result.query.filter_by).toContain("mapped_field:<=2022-12-31");
+    expect(result.query.filter_by).toContain('mapped_field:>= "2022-01-01"');
+    expect(result.query.filter_by).toContain('mapped_field:<= "2022-12-31"');
     expect(result.warnings).toEqual([]);
   });
 });

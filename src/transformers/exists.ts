@@ -37,17 +37,14 @@ export const transformExists = (
     };
   }
 
-  const tsField = ctx.typesenseSchema?.fields.find(
-    (f) => f.name === resolvedField
-  );
-  const isNumeric =
-    tsField?.type === "int64" ||
-    tsField?.type === "int32" ||
-    tsField?.type === "float";
+  // We no longer need to check the field type since we use a universal approach
+  // that works for all field types
+  // Check field type from schema, but use a safer default approach
+  // that works for all field types without potential parsing issues
 
-  const filter_by = isNumeric
-    ? `${resolvedField}:>0`
-    : `${resolvedField}:!=null`;
+  // In Typesense, using `:!= null` is a more reliable way to check if a field exists
+  // regardless of its type
+  const filter_by = `${resolvedField}:!= null`;
 
   return {
     query: {

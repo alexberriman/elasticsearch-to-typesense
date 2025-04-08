@@ -20,7 +20,7 @@ describe("transformTerms", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:=[value1,value2,value3]",
+        filter_by: 'mapped_field:= ["value1", "value2", "value3"]',
       },
       warnings: [],
     });
@@ -34,7 +34,7 @@ describe("transformTerms", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:=[1,2,3]",
+        filter_by: "mapped_field:= [1, 2, 3]",
       },
       warnings: [],
     });
@@ -48,7 +48,7 @@ describe("transformTerms", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:=[1,two,true]",
+        filter_by: 'mapped_field:= [1, "two", true]',
       },
       warnings: [],
     });
@@ -66,8 +66,10 @@ describe("transformTerms", () => {
 
     const result = transformTerms(query, ctx);
 
-    expect(result.query.filter_by).toContain("mapped_field1:=[value1,value2]");
-    expect(result.query.filter_by).toContain("mapped_field2:=[1,2]");
+    expect(result.query.filter_by).toContain(
+      'mapped_field1:= ["value1", "value2"]'
+    );
+    expect(result.query.filter_by).toContain("mapped_field2:= [1, 2]");
     expect(result.query.filter_by).toContain("&&");
     expect(result.warnings).toEqual([]);
   });
@@ -116,9 +118,9 @@ describe("transformTerms", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:=[]",
+        filter_by: "mapped_field:= []",
       },
-      warnings: [],
+      warnings: ['Empty array for field "field_name" in terms clause'],
     });
   });
 
@@ -137,7 +139,7 @@ describe("transformTerms", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "actual_field:=[1,2,3]",
+        filter_by: "actual_field:= [1, 2, 3]",
       },
       warnings: ['Skipped unmapped field "unmapped_field"'],
     });

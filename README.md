@@ -309,6 +309,9 @@ npm run test:watch
 
 # Run integration tests (requires a running Typesense instance)
 npm run test:integration
+
+# Run a specific integration test (e.g., test query #2)
+npm run test:integration:single --index=2
 ```
 
 4. Build the package:

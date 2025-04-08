@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest watch",
     "test:integration": "vitest --config vitest.integration.config.ts run",
+    "test:integration:single": "TEST_INDEX=$npm_config_index vitest --config vitest.integration.config.ts run",
     "lint": "eslint 'src/**/*.ts' --ignore-pattern '*.test.ts'",
     "lint:tests": "eslint 'src/**/*.test.ts' 'tests/**/*.ts'",
     "lint:all": "eslint '**/*.ts'",

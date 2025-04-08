@@ -20,7 +20,8 @@ export const transformMatch = (
       continue;
     }
 
-    filters.push(`${mapped}:=${formatTypesenseFilterValue(value)}`);
+    // Use the proper Typesense filter syntax (field:=value) for exact matches
+    filters.push(`${mapped}:= ${formatTypesenseFilterValue(value)}`);
   }
 
   return {
