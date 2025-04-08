@@ -22,6 +22,7 @@ describe("integration", () => {
         activity_max_price: "max_price",
         activity_url_key: "slug",
         activity_type_name: "type_name",
+        visibility: "visibility_id",
       },
     });
 

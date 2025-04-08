@@ -10,7 +10,33 @@ export const coerceValueFromSchema = (
   const tsField = schema.fields.find((f) => f.name === field);
   if (!tsField) return value;
 
-  switch (tsField.type) {
+  const { type } = tsField;
+
+  // Normalize "null"/"undefined" string values
+  const isNullish =
+    value === null ||
+    value === undefined ||
+    (typeof value === "string" &&
+      (value.trim().toLowerCase() === "null" ||
+        value.trim().toLowerCase() === "undefined"));
+
+  if (isNullish) {
+    switch (type) {
+      case "int32":
+      case "int64":
+      case "float":
+        return 0;
+      case "bool":
+        return false;
+      case "string":
+      case "geopoint":
+      default:
+        return "";
+    }
+  }
+
+  // Coerce based on schema type
+  switch (type) {
     case "int32":
     case "int64":
       return typeof value === "string" ? parseInt(value, 10) : value;

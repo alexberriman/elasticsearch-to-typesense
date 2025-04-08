@@ -20,14 +20,15 @@ export const transformBool = (
     const subFilterSet: Set<string> = new Set();
 
     for (const q of queries) {
-      const sub = transformQueryRecursively(q, ctx);
+      const isNegated = key === "must_not";
+      const sub = transformQueryRecursively(q, { ...ctx, negated: isNegated });
+
       if (sub.query.filter_by) subFilterSet.add(`(${sub.query.filter_by})`);
       warnings.push(...sub.warnings);
     }
 
     if (subFilterSet.size > 0) {
       if (key === "must_not") {
-        // Try to detect and convert disjunction of same-field match clauses
         const parsed = [...subFilterSet].map((clause) =>
           clause.match(/^\((\w+):=("[^"]+"|\w+)\)$/)
         );
@@ -41,8 +42,18 @@ export const transformBool = (
           const values = parsed.map((m) => m![2]);
           filters.push(`${field}:!=[${values.join(",")}]`);
         } else {
-          const joined = [...subFilterSet].join(" || ");
-          filters.push(`!(${joined})`);
+          // ✅ Filter out clauses that contain range operators, which can't be negated in Typesense
+          const safe = [...subFilterSet].filter(
+            (clause) => !/[<>]=?|:[^=]/.test(clause) // filters out >, <, >=, <=, :=, etc
+          );
+
+          if (safe.length > 0) {
+            filters.push(`!(${safe.join(" || ")})`);
+          } else {
+            warnings.push(
+              "Skipped must_not clause with unsupported negated range filter"
+            );
+          }
         }
       } else {
         const joined = [...subFilterSet].join(

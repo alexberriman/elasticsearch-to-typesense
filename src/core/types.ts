@@ -11,6 +11,7 @@ export interface TransformerContext {
   propertyMapping: PropertyMapping;
   typesenseSchema?: TypesenseSchema;
   elasticSchema?: ElasticSchema;
+  negated?: boolean;
 }
 
 export type ElasticsearchQuery = Record<string, unknown>;
