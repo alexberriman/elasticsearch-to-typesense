@@ -1,10 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import { createTransformer } from "./create-transformer";
-import { TransformerOptions } from "./types";
+import { ResultMapper, TransformerOptions } from "./types";
 import * as autoMapping from "../utils/apply-auto-mapping";
 import * as transformer from "./transformer";
 import * as transformHints from "../utils/suggest-transform-hints";
 import * as common from "../transformers/common";
+import * as mapResultsModule from "../utils/map-results-to-elastic";
 
 vi.mock("../utils/apply-auto-mapping", () => ({
   applyAutoMapping: vi.fn(),
@@ -22,6 +23,10 @@ vi.mock("../transformers/common", () => ({
   createPaginationAndSort: vi.fn(),
 }));
 
+vi.mock("../utils/map-results-to-elastic", () => ({
+  createDefaultMapper: vi.fn(),
+}));
+
 describe("createTransformer", () => {
   beforeEach(() => {
     vi.resetAllMocks();
@@ -31,6 +36,7 @@ describe("createTransformer", () => {
     const transformer = createTransformer({});
     expect(transformer).toHaveProperty("transform");
     expect(typeof transformer.transform).toBe("function");
+    expect(transformer).not.toHaveProperty("mapResults");
   });
 
   it("should use provided propertyMapping when autoMapProperties is false", () => {
@@ -174,6 +180,92 @@ describe("createTransformer", () => {
       transformerInstance.transform({ query: {} });
 
       expect(transformHints.suggestTransformHints).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("mapResults method", () => {
+    it("should include mapResults function when custom mapper is provided", () => {
+      const customMapper: ResultMapper = (doc) => ({ mapped: true, doc });
+
+      const transformer = createTransformer({
+        mapResultsToElasticSchema: customMapper,
+      });
+
+      expect(transformer).toHaveProperty("mapResults");
+      expect(transformer.mapResults).toBe(customMapper);
+
+      // Test mapper works
+      const result = transformer.mapResults({ field: "value" });
+      expect(result).toEqual({ mapped: true, doc: { field: "value" } });
+    });
+
+    it("should include mapResults function when property mapping is provided", () => {
+      const mockDefaultMapper = (doc: any) => ({ default_mapped: true, doc });
+      vi.mocked(mapResultsModule.createDefaultMapper).mockReturnValue(
+        mockDefaultMapper
+      );
+
+      const propertyMapping = { es_field: "ts_field" };
+      const transformer = createTransformer({ propertyMapping });
+
+      expect(transformer).toHaveProperty("mapResults");
+      expect(mapResultsModule.createDefaultMapper).toHaveBeenCalledWith(
+        propertyMapping
+      );
+
+      // Test mapper works
+      const result = transformer.mapResults?.({ ts_field: "value" });
+      expect(result).toEqual({
+        default_mapped: true,
+        doc: { ts_field: "value" },
+      });
+    });
+
+    it("should not include mapResults function with no mapping information", () => {
+      const transformer = createTransformer({});
+      expect(transformer).not.toHaveProperty("mapResults");
+    });
+
+    it("should support async mapping functions", async () => {
+      const asyncMapper: ResultMapper = async (doc) => {
+        return { async_mapped: true, doc };
+      };
+
+      const transformer = createTransformer({
+        mapResultsToElasticSchema: asyncMapper,
+      });
+
+      expect(transformer).toHaveProperty("mapResults");
+
+      const resultPromise = transformer.mapResults({ field: "value" });
+      expect(resultPromise).toBeInstanceOf(Promise);
+
+      const result = await resultPromise;
+      expect(result).toEqual({
+        async_mapped: true,
+        doc: { field: "value" },
+      });
+    });
+
+    it("should handle array inputs in mapResults", () => {
+      const customMapper: ResultMapper = (docs) => {
+        if (Array.isArray(docs)) {
+          return docs.map((d) => ({ mapped: true, doc: d }));
+        }
+        return { mapped: true, doc: docs };
+      };
+
+      const transformer = createTransformer({
+        mapResultsToElasticSchema: customMapper,
+      });
+
+      const docs = [{ id: 1 }, { id: 2 }];
+      const result = transformer.mapResults(docs);
+
+      expect(result).toEqual([
+        { mapped: true, doc: { id: 1 } },
+        { mapped: true, doc: { id: 2 } },
+      ]);
     });
   });
 });
