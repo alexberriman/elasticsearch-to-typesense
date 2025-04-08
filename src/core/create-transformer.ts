@@ -2,12 +2,15 @@ import { applyAutoMapping } from "../utils/apply-auto-mapping";
 import { suggestTransformHints } from "../utils/suggest-transform-hints";
 import { createPaginationAndSort } from "../transformers/common";
 import { transformQueryRecursively } from "./transformer";
+import { createDefaultMapper } from "../utils/map-results-to-elastic";
+import { ok, err } from "../utils/result";
 import {
   Result,
   TransformResult,
   TransformerOptions,
   TransformerContext,
   TypesenseQuery,
+  ResultMapper,
 } from "./types";
 
 /**
@@ -46,7 +49,7 @@ export const createTransformer = (opts: TransformerOptions) => {
   ): Result<TransformResult<TypesenseQuery>> => {
     // Validate input
     if (typeof input !== "object" || input == null) {
-      return { ok: false, error: "Input must be an object" };
+      return err("Input must be an object");
     }
 
     // Safely cast input after validation
@@ -68,17 +71,48 @@ export const createTransformer = (opts: TransformerOptions) => {
           )
         : [];
 
-    return {
-      ok: true,
-      value: {
-        query: {
-          ...main.query,
-          ...paginationPart.query,
-        },
-        warnings: [...main.warnings, ...paginationPart.warnings, ...hints],
+    return ok({
+      query: {
+        ...main.query,
+        ...paginationPart.query,
       },
-    };
+      warnings: [...main.warnings, ...paginationPart.warnings, ...hints],
+    });
   };
 
+  // Determine if we should provide a mapResults function
+  if (opts.mapResultsToElasticSchema) {
+    // Use the provided mapper function
+    return {
+      transform,
+      /**
+       * Maps Typesense results back to Elasticsearch format
+       *
+       * @param documents - The Typesense document(s) to map
+       * @returns The mapped Elasticsearch document(s)
+       */
+      mapResults: opts.mapResultsToElasticSchema,
+    };
+  } else if (
+    propertyMapping !== undefined &&
+    Object.keys(propertyMapping).length > 0
+  ) {
+    // Create a default mapper based on the property mapping
+    const defaultMapper = createDefaultMapper(propertyMapping);
+
+    return {
+      transform,
+      /**
+       * Maps Typesense results back to Elasticsearch format
+       * Uses a default mapper based on inverting the property mapping
+       *
+       * @param documents - The Typesense document(s) to map
+       * @returns The mapped Elasticsearch document(s)
+       */
+      mapResults: defaultMapper as ResultMapper,
+    };
+  }
+
+  // No mapping function provided and no property mapping available
   return { transform };
 };

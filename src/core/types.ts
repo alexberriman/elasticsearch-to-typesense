@@ -112,6 +112,18 @@ export interface ElasticSchema {
   >;
 }
 
+/**
+ * Function to map Typesense documents back to Elasticsearch format
+ *
+ * @template T - Type of Typesense document(s)
+ * @template R - Type of resulting Elasticsearch document(s)
+ * @param documents - Typesense document or array of documents
+ * @returns Elasticsearch document or array of documents (or Promise of these)
+ */
+export type ResultMapper<T = any, R = any> = (
+  documents: T | T[]
+) => R | R[] | Promise<R | R[]>;
+
 export interface TransformerOptions {
   /**
    * Manual mapping of Elasticsearch field names to Typesense field names
@@ -158,4 +170,14 @@ export interface TransformerOptions {
    * Default field to use for scoring/relevance
    */
   defaultScoreField?: string;
+
+  /**
+   * Function to map Typesense results back to Elasticsearch format
+   * When provided, the transformer will expose a mapResults function
+   *
+   * If both typesenseSchema and elasticSchema are provided, this function
+   * will map between properly typed documents based on the schemas.
+   * Otherwise, it operates on generic Record<string, any> objects.
+   */
+  mapResultsToElasticSchema?: ResultMapper;
 }
