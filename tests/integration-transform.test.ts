@@ -27,6 +27,7 @@ describe("integration", () => {
         activity_url_key: "slug",
         activity_type_name: "type_name",
         visibility: "visibility_id",
+        activity_location: "geopoint",
       },
     });
 
@@ -39,10 +40,6 @@ describe("integration", () => {
     }
 
     const typesenseQuery = result.value.query;
-    console.log(
-      "✅ Transformed Query:",
-      JSON.stringify(typesenseQuery, null, 2)
-    );
 
     const url = new URL(
       `${TYPESENSE_HOST}/collections/${COLLECTION_NAME}/documents/search`
@@ -58,6 +55,15 @@ describe("integration", () => {
     });
 
     const data = await response.json();
+    console.log(
+      "Typesense query: \n\n",
+      JSON.stringify(typesenseQuery, null, 2)
+    );
+
+    console.log(
+      "Warnings: \n\n",
+      JSON.stringify(result.value.warnings, null, 2)
+    );
     expect(response.ok).toBe(true);
     expect(data).toHaveProperty("hits");
   });

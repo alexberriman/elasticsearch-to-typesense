@@ -1,6 +1,7 @@
 import { resolveMappedField } from "../utils/resolve-mapped-field";
 import { quoteValue } from "../utils/quote-value";
 import { coerceValueFromSchema } from "../utils/coerce-value-from-schema";
+import { transformGeoSort } from "../utils/transform-geo-sort";
 import { TransformerContext } from "../core/types";
 
 export const createPaginationAndSort = (
@@ -28,8 +29,9 @@ export const createPaginationAndSort = (
         const options = rawOptions as { order: "asc" | "desc" };
 
         if (field === "_geo_distance") {
-          warnings.push("Typesense does not support geo sorting yet");
-          return null;
+          const geoSortResult = transformGeoSort(rawOptions as Record<string, any>, ctx);
+          warnings.push(...geoSortResult.warnings);
+          return geoSortResult.sort || null;
         }
 
         if (field === "_score") {
