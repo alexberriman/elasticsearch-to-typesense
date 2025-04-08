@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { transformExists } from "./exists";
 import { TransformerContext } from "../core/types";
+import * as resolveFieldModule from "../utils/resolve-mapped-field";
 
 describe("transformExists", () => {
   const createContext = (
@@ -9,6 +10,10 @@ describe("transformExists", () => {
   ): TransformerContext => ({
     propertyMapping,
     typesenseSchema,
+  });
+  
+  beforeEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("transforms exists query for string field", () => {
@@ -113,6 +118,8 @@ describe("transformExists", () => {
   it("returns warning when field cannot be resolved", () => {
     const query = { field: "unknown_field" };
     const ctx = createContext();
+    
+    vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(undefined);
 
     const result = transformExists(query, ctx);
 

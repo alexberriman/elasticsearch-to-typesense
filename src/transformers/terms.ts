@@ -28,7 +28,7 @@ export const transformTerms = (
   }
 
   return {
-    query: { filter_by: parts.join(" && ") },
+    query: { filter_by: parts.length > 0 ? parts.join(" && ") : "" },
     warnings,
   };
 };

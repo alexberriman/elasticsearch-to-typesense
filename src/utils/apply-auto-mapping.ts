@@ -6,13 +6,16 @@ export const applyAutoMapping = (
 ): Record<string, string> => {
   const mapping: Record<string, string> = {};
 
-  // Create mapping by finding matching field names
-
+  // Only map activity_ prefixed fields to their typesense counterparts
   Object.keys(elastic.properties).forEach((elasticField) => {
-    for (const tsField of typesense.fields) {
-      if (tsField.name.endsWith(elasticField.replace(/^activity_/, ""))) {
-        mapping[elasticField] = tsField.name;
-        break;
+    if (elasticField.startsWith('activity_')) {
+      const cleanFieldName = elasticField.replace(/^activity_/, "");
+      
+      for (const tsField of typesense.fields) {
+        if (tsField.name === cleanFieldName) {
+          mapping[elasticField] = tsField.name;
+          break;
+        }
       }
     }
   });

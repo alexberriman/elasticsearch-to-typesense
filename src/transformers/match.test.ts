@@ -1,10 +1,15 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { transformMatch } from "./match";
 import { TransformerContext } from "../core/types";
+import * as resolveFieldModule from "../utils/resolve-mapped-field";
 
 describe("transformMatch", () => {
   const createContext = (propertyMapping = {}): TransformerContext => ({
     propertyMapping,
+  });
+  
+  beforeEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("transforms a match query with a single field", () => {
@@ -70,6 +75,8 @@ describe("transformMatch", () => {
   it("returns warning when field cannot be resolved", () => {
     const query = { unknown_field: "value" };
     const ctx = createContext();
+    
+    vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(undefined);
 
     const result = transformMatch(query, ctx);
 
@@ -87,6 +94,10 @@ describe("transformMatch", () => {
       unknown_field: "value2",
     };
     const ctx = createContext({ known_field: "mapped_field" });
+    
+    vi.spyOn(resolveFieldModule, "resolveMappedField").mockImplementation(
+      (field) => field === "known_field" ? "mapped_field" : undefined
+    );
 
     const result = transformMatch(query, ctx);
 

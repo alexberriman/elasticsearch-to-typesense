@@ -1,10 +1,15 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { transformTerm } from "./term";
 import { TransformerContext } from "../core/types";
+import * as resolveFieldModule from "../utils/resolve-mapped-field";
 
 describe("transformTerm", () => {
   const createContext = (propertyMapping = {}): TransformerContext => ({
     propertyMapping,
+  });
+  
+  beforeEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("transforms a term query with string value", () => {
@@ -52,6 +57,8 @@ describe("transformTerm", () => {
   it("returns warning when field cannot be resolved", () => {
     const query = { unknown_field: "value" };
     const ctx = createContext();
+    
+    vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(undefined);
 
     const result = transformTerm(query, ctx);
 

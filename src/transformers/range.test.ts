@@ -3,6 +3,7 @@ import { transformRange } from "./range";
 import { TransformerContext } from "../core/types";
 import * as handleReservedKeywords from "../utils/handle-reserved-keywords";
 import * as coerceValueModule from "../utils/coerce-value-from-schema";
+import * as resolveFieldModule from "../utils/resolve-mapped-field";
 
 describe("transformRange", () => {
   const createContext = (
@@ -48,6 +49,8 @@ describe("transformRange", () => {
       },
     };
     const ctx = createContext({});
+    
+    vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(undefined);
 
     const result = transformRange(query, ctx);
 

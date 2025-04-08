@@ -25,7 +25,7 @@ export const transformMatch = (
 
   return {
     query: {
-      filter_by: filters.join(" && "),
+      filter_by: filters.length ? filters.join(" && ") : "",
     },
     warnings,
   };

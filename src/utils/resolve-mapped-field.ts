@@ -1,9 +1,18 @@
 import { TransformerContext } from "../core/types";
 
 export const resolveMappedField = (
-  field: string,
+  field: string | null | undefined,
   ctx: TransformerContext
 ): string | undefined => {
+  if (field === null || field === undefined) {
+    return '';
+  }
+  
+  // Empty string case
+  if (field === '') {
+    return '';
+  }
+  
   const mapped = ctx.propertyMapping[field] ?? field;
 
   const valid =

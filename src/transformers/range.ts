@@ -65,7 +65,7 @@ export const transformRange = (
   }
 
   return {
-    query: { filter_by: [...parts].join(" && ") },
+    query: { filter_by: parts.size > 0 ? [...parts].join(" && ") : "" },
     warnings,
   };
 };

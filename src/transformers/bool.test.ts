@@ -62,7 +62,7 @@ describe("transformBool", () => {
 
     const result = transformBool(query, createContext());
 
-    expect(result.query.filter_by).toBe("(field1:=value1 || field2:=value2)");
+    expect(result.query.filter_by).toBe("(field1:=value1) || (field2:=value2)");
     expect(result.warnings).toEqual([]);
     expect(transformer.transformQueryRecursively).toHaveBeenCalledTimes(2);
   });
@@ -151,7 +151,7 @@ describe("transformBool", () => {
     const result = transformBool(query, createContext());
 
     expect(result.query.filter_by).toBe(
-      "(must:=value) && (should:=value) && !(mustNot:=value)"
+      "((must:=value)) && ((should:=value)) && !((mustNot:=value))"
     );
     expect(result.warnings).toContain("Warning");
     expect(transformer.transformQueryRecursively).toHaveBeenCalledTimes(3);
