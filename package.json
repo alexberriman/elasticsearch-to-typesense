@@ -1,5 +1,5 @@
 {
-  "name": "elastic-to-typesense",
+  "name": "elasticsearch-to-typesense",
   "version": "0.0.0-development",
   "type": "module",
   "main": "dist/index.js",
@@ -33,7 +33,7 @@
   "description": "Convert Elasticsearch queries to Typesense format",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alexberriman/elastic-to-typesense.git"
+    "url": "https://github.com/alexberriman/elasticsearch-to-typesense.git"
   },
   "files": [
     "dist",

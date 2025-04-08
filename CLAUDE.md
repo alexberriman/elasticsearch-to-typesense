@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-Elastic-to-typesense is a library for converting Elasticsearch 6.8 queries to Typesense v28 format. The library is under active development and designed to help migrate search functionality without rewriting queries.
+Elasticsearch-to-typesense is a library for converting Elasticsearch 6.8 queries to Typesense v28 format. The library is under active development and designed to help migrate search functionality without rewriting queries.
 
 ## Project Structure
 - `/src/core/` - Core transformer functionality and types
