@@ -1,0 +1,207 @@
+{
+  "properties": {
+    "activity_admin": {
+      "type": "keyword"
+    },
+    "activity_age": {
+      "type": "keyword"
+    },
+    "activity_age_from": {
+      "type": "integer"
+    },
+    "activity_age_to": {
+      "type": "integer"
+    },
+    "activity_created_by": {
+      "type": "keyword"
+    },
+    "activity_created_on": {
+      "type": "date"
+    },
+    "activity_date_from": {
+      "type": "date"
+    },
+    "activity_date_to": {
+      "type": "date"
+    },
+    "activity_difficulties": {
+      "type": "keyword"
+    },
+    "activity_followed_users": {
+      "type": "keyword"
+    },
+    "activity_from_time": {
+      "type": "date",
+      "format": "HH:mm:ss"
+    },
+    "activity_gender": {
+      "type": "keyword"
+    },
+    "activity_hide_date": {
+      "type": "boolean"
+    },
+    "activity_image_url": {
+      "type": "keyword"
+    },
+    "activity_intention": {
+      "type": "keyword"
+    },
+    "activity_is_corporate": {
+      "type": "boolean"
+    },
+    "activity_is_personal": {
+      "type": "boolean"
+    },
+    "activity_location": {
+      "type": "geo_point"
+    },
+    "activity_location_slug": {
+      "type": "text"
+    },
+    "activity_max_price": {
+      "type": "float"
+    },
+    "activity_min_price": {
+      "type": "float"
+    },
+    "activity_name": {
+      "type": "keyword"
+    },
+    "activity_nic_name": {
+      "type": "text"
+    },
+    "activity_organisation_id": {
+      "type": "keyword"
+    },
+    "activity_participated_user": {
+      "type": "keyword"
+    },
+    "activity_price": {
+      "type": "float"
+    },
+    "activity_sport_type_id": {
+      "type": "keyword"
+    },
+    "activity_sporttype_name": {
+      "type": "text"
+    },
+    "activity_status": {
+      "type": "keyword"
+    },
+    "activity_subtitle": {
+      "type": "text"
+    },
+    "activity_title": {
+      "type": "text"
+    },
+    "activity_to_time": {
+      "type": "date",
+      "format": "HH:mm:ss"
+    },
+    "activity_type": {
+      "type": "keyword"
+    },
+    "activity_type_id": {
+      "type": "keyword"
+    },
+    "activity_type_name": {
+      "type": "text"
+    },
+    "activity_url_key": {
+      "type": "keyword"
+    },
+    "city": {
+      "type": "keyword"
+    },
+    "country": {
+      "type": "keyword"
+    },
+    "currency": {
+      "type": "text"
+    },
+    "external_registration_link": {
+      "type": "text"
+    },
+    "friends_played": {
+      "type": "keyword"
+    },
+    "from_time_zone": {
+      "type": "text"
+    },
+    "id": {
+      "type": "keyword"
+    },
+    "is_competition": {
+      "type": "boolean"
+    },
+    "is_major_sport_event": {
+      "type": "boolean"
+    },
+    "is_paid": {
+      "type": "boolean"
+    },
+    "is_pro": {
+      "type": "boolean"
+    },
+    "is_special_need": {
+      "type": "boolean"
+    },
+    "is_special_offer_needed": {
+      "type": "boolean"
+    },
+    "is_training_required": {
+      "type": "boolean"
+    },
+    "organisation_account_status": {
+      "type": "keyword"
+    },
+    "organisation_associations": {
+      "type": "text"
+    },
+    "organisation_avatar": {
+      "type": "text"
+    },
+    "organisation_claim_status": {
+      "type": "keyword"
+    },
+    "organisation_id": {
+      "type": "keyword"
+    },
+    "organisation_status": {
+      "type": "keyword"
+    },
+    "organisation_verification_status": {
+      "type": "keyword"
+    },
+    "organisation_visibility": {
+      "type": "keyword"
+    },
+    "playing_days": {
+      "type": "keyword"
+    },
+    "registration_close_date": {
+      "type": "date"
+    },
+    "registration_link": {
+      "type": "keyword"
+    },
+    "registration_open_date": {
+      "type": "date"
+    },
+    "state": {
+      "type": "keyword"
+    },
+    "suburb": {
+      "type": "keyword"
+    },
+    "time_zone": {
+      "type": "text"
+    },
+    "to_time_zone": {
+      "type": "text"
+    },
+    "visibility": {
+      "type": "keyword"
+    }
+  }
+}
