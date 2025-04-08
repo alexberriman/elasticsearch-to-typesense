@@ -213,6 +213,47 @@ interface ElasticSchema {
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+### Development Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/alexberriman/elastic-to-typesense.git
+cd elastic-to-typesense
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Run tests:
+```bash
+# Run unit tests
+npm test
+
+# Run tests in watch mode during development
+npm run test:watch
+
+# Run integration tests (requires a running Typesense instance)
+npm run test:integration
+```
+
+4. Build the package:
+```bash
+npm run build
+```
+
+### Release Process
+
+This package uses [semantic-release](https://github.com/semantic-release/semantic-release) for versioning and releasing. Commits should follow the [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+- `feat: add new feature` (triggers a minor release)
+- `fix: fix a bug` (triggers a patch release)
+- `docs: update documentation` (no release)
+- `test: add tests` (no release)
+- `chore: update build process` (no release)
+- Breaking changes should include `BREAKING CHANGE:` in the commit body (triggers a major release)
+
 ## License
 
 ISC
