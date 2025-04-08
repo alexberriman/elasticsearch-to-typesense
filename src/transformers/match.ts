@@ -15,7 +15,7 @@ export const transformMatch = (
 
   for (const [field, value] of Object.entries(match)) {
     const mapped = resolveMappedField(field, ctx);
-    if (!mapped) {
+    if (mapped === undefined || mapped === null) {
       warnings.push(`Skipped unmapped field "${field}"`);
       continue;
     }

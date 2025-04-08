@@ -26,7 +26,7 @@ export const transformMultiMatch = (
   const warnings: string[] = [];
   const { fields, query, type, fuzziness } = multiMatch;
 
-  if (!fields || !Array.isArray(fields) || fields.length === 0) {
+  if (fields === undefined || !Array.isArray(fields) || fields.length === 0) {
     warnings.push("Multi-match requires fields to be specified");
     return {
       query: {},
@@ -43,7 +43,7 @@ export const transformMultiMatch = (
     const [fieldName, boost] = field.split("^");
     const mappedField = resolveMappedField(fieldName, ctx);
 
-    if (!mappedField) {
+    if (mappedField === undefined || mappedField === null) {
       warnings.push(`Skipped unmapped field "${fieldName}" in multi_match`);
       continue;
     }
@@ -96,7 +96,7 @@ export const transformMultiMatch = (
   }
 
   // Handle type parameter
-  if (type) {
+  if (type !== undefined && type !== null && type !== "") {
     switch (type) {
       case "phrase_prefix":
         dynamicParams.prefix = true;

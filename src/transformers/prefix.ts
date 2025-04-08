@@ -44,7 +44,7 @@ export const transformPrefix = (
 
   // Resolve the mapped field name
   const mappedField = resolveMappedField(field, ctx);
-  if (!mappedField) {
+  if (mappedField === undefined || mappedField === null) {
     return {
       query: {},
       warnings: [`Skipped unmapped field "${field}"`],

@@ -5,14 +5,32 @@ import {
   TypesenseQuery,
 } from "../core/types";
 
+interface ExistsQuery {
+  field?: string;
+}
+
 export const transformExists = (
-  query: any,
+  query: unknown,
   ctx: TransformerContext
 ): TransformResult<Partial<TypesenseQuery>> => {
-  const field = query.field;
+  // Type-safe handling of field
+  const existsQuery =
+    typeof query === "object" && query !== null
+      ? (query as ExistsQuery)
+      : ({} as ExistsQuery);
+
+  // Handle missing field
+  if (existsQuery.field === undefined || existsQuery.field === "") {
+    return {
+      query: {},
+      warnings: ["Missing field parameter in exists clause"],
+    };
+  }
+
+  const field = existsQuery.field;
   const resolvedField = resolveMappedField(field, ctx);
 
-  if (!resolvedField) {
+  if (resolvedField === undefined || resolvedField === null) {
     return {
       query: {},
       warnings: [`Could not resolve field "${field}" in exists clause`],

@@ -6,15 +6,28 @@ import {
 import { transformQueryRecursively } from "../core/transformer";
 import { normalizeParentheses } from "../utils/normalize-parentheses";
 
+interface BoolQuery {
+  must?: unknown[];
+  must_not?: unknown[];
+  should?: unknown[];
+  filter?: unknown[];
+  [key: string]: unknown;
+}
+
 export const transformBool = (
-  bool: any,
+  bool: unknown,
   ctx: TransformerContext
 ): TransformResult<Partial<TypesenseQuery>> => {
+  // Type checking and handling
+  const boolQuery =
+    typeof bool === "object" && bool !== null
+      ? (bool as BoolQuery)
+      : ({} as BoolQuery);
   const warnings: string[] = [];
   const filters: string[] = [];
 
   const handleArray = (key: "must" | "should" | "must_not") => {
-    const queries = bool[key];
+    const queries = boolQuery[key];
     if (!Array.isArray(queries)) return;
 
     const subFilterSet: Set<string> = new Set();
@@ -23,7 +36,12 @@ export const transformBool = (
       const isNegated = key === "must_not";
       const sub = transformQueryRecursively(q, { ...ctx, negated: isNegated });
 
-      if (sub.query.filter_by) subFilterSet.add(`(${sub.query.filter_by})`);
+      if (
+        typeof sub.query.filter_by === "string" &&
+        sub.query.filter_by.length > 0
+      ) {
+        subFilterSet.add(`(${sub.query.filter_by})`);
+      }
       warnings.push(...sub.warnings);
     }
 
@@ -35,7 +53,7 @@ export const transformBool = (
 
         const allSameField =
           parsed.length > 1 &&
-          parsed.every((m) => m && m[1] === parsed[0]?.[1]);
+          parsed.every((m) => m !== null && m[1] === parsed[0]?.[1]);
 
         if (allSameField) {
           const field = parsed[0]![1];

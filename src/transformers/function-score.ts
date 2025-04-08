@@ -5,29 +5,46 @@ import {
 } from "../core/types";
 import { transformQueryRecursively } from "../core/transformer";
 
+interface FunctionScoreQuery {
+  query?: unknown;
+  functions?: unknown[];
+  [key: string]: unknown;
+}
+
 export const transformFunctionScore = (
-  fnScore: any,
+  fnScore: unknown,
   ctx: TransformerContext
 ): TransformResult<Partial<TypesenseQuery>> => {
   const warnings: string[] = [];
 
-  if (!fnScore.query) {
+  // Type checking
+  const functionScore =
+    typeof fnScore === "object" && fnScore !== null
+      ? (fnScore as FunctionScoreQuery)
+      : ({} as FunctionScoreQuery);
+
+  // Check for query property existence
+  if (functionScore.query === undefined) {
     return {
       query: {},
       warnings: ['Missing "query" in function_score'],
     };
   }
 
-  const base = transformQueryRecursively(fnScore.query, ctx);
+  const base = transformQueryRecursively(functionScore.query, ctx);
   warnings.push(...base.warnings);
 
-  if (Array.isArray(fnScore.functions)) {
+  if (Array.isArray(functionScore.functions)) {
     warnings.push("function_score.functions are not supported in Typesense");
   }
 
   return {
     query: {
-      filter_by: base.query.filter_by ? `(${base.query.filter_by})` : undefined,
+      filter_by:
+        typeof base.query.filter_by === "string" &&
+        base.query.filter_by.length > 0
+          ? `(${base.query.filter_by})`
+          : undefined,
     },
     warnings,
   };

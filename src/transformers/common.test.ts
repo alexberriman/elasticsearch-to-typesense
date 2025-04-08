@@ -42,6 +42,7 @@ describe("createPaginationAndSort", () => {
   });
 
   it("transforms simple sort fields", () => {
+    // @ts-expect-error - Mock can return null for test
     vi.spyOn(resolveFieldModule, "resolveMappedField").mockImplementation(
       (field) =>
         field === "field1"
@@ -126,6 +127,7 @@ describe("createPaginationAndSort", () => {
   });
 
   it("adds warning for unmapped sort field", () => {
+    // @ts-expect-error - Mock returns null for test
     vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(null);
 
     const input = {

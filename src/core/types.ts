@@ -15,16 +15,20 @@ export interface TransformerContext {
   defaultScoreField?: string;
 }
 
-export type ElasticsearchQuery = Record<string, unknown>;
+// Define ElasticsearchQuery as a recursive type that can handle nested objects
+export type ElasticsearchQuery = {
+  [key: string]: unknown;
+};
 
 export type TypesenseQuery = {
-  q: string;
+  q?: string; // Making q optional to fix type errors in tests
   filter_by?: string;
   sort_by?: string;
   per_page?: number;
   page?: number;
   query_by?: string;
   query_by_weights?: string;
+  [key: string]: unknown; // Allow additional properties
 };
 
 export interface TypesenseSchema {

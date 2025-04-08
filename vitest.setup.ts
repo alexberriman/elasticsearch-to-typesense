@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, vi } from 'vitest';
+import { afterEach, beforeEach, vi } from "vitest";
 
 // Make common testing functions available globally
 globalThis.beforeEach = beforeEach;

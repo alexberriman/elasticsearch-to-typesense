@@ -17,7 +17,7 @@ export const transformRange = (
 
   for (const [field, conditions] of Object.entries(range)) {
     const mapped = resolveMappedField(field, ctx);
-    if (!mapped) {
+    if (mapped === undefined || mapped === null) {
       warnings.push(`Skipped unmapped field "${field}"`);
       continue;
     }
@@ -55,7 +55,7 @@ export const transformRange = (
             );
         }
 
-        if (clause) {
+        if (clause !== null) {
           parts.add(clause);
         }
       }
