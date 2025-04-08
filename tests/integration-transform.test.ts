@@ -4,8 +4,12 @@ import query from "./sample-query.json";
 import typesenseSchema from "./typesense-schema.json";
 import elasticSchema from "./elastic-schema.json";
 
+const TYPESENSE_API_KEY = "test123";
+const TYPESENSE_HOST = "http://localhost:8108";
+const COLLECTION_NAME = "activities";
+
 describe("integration", () => {
-  it("transforms full ES query to Typesense query using auto-mapping and schemas", () => {
+  it("transforms and executes the query against Typesense", async () => {
     const transformer = createTransformer({
       autoMapProperties: false,
       typesenseSchema,
@@ -29,11 +33,37 @@ describe("integration", () => {
     const result = transformer.transform(query);
     expect(result.ok).toBe(true);
 
-    if (result.ok) {
-      console.log("✅ Transformed Query:", JSON.stringify(result.value.query));
-      console.log("⚠️ Warnings:", result.value.warnings);
-    } else {
+    if (!result.ok) {
       console.error("❌ Transformation failed:", result.error);
+      return;
     }
+
+    const typesenseQuery = result.value.query;
+    console.log(
+      "✅ Transformed Query:",
+      JSON.stringify(typesenseQuery, null, 2)
+    );
+    console.log("⚠️ Warnings:", result.value.warnings);
+
+    const url = new URL(
+      `${TYPESENSE_HOST}/collections/${COLLECTION_NAME}/documents/search`
+    );
+    Object.entries(typesenseQuery).forEach(([key, value]) =>
+      url.searchParams.append(key, String(value))
+    );
+
+    const response = await fetch(url.toString(), {
+      headers: {
+        "X-TYPESENSE-API-KEY": TYPESENSE_API_KEY,
+      },
+    });
+
+    const data = await response.json();
+
+    console.log("📡 Response status:", response.status);
+    console.log("📄 Response body:", data);
+
+    expect(response.ok).toBe(true);
+    expect(data).toHaveProperty("hits");
   });
 });

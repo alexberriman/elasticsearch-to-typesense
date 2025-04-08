@@ -20,9 +20,13 @@ export const transformTerm = (
     };
   }
 
+  const isBoolean = typeof value === "boolean";
+  const isNumber = typeof value === "number";
+  const safeValue = isBoolean || isNumber ? value : quoteValue(value);
+
   return {
     query: {
-      filter_by: `${resolvedField}:=${quoteValue(value)}`,
+      filter_by: `${resolvedField}:=${safeValue}`,
     },
     warnings: [],
   };
