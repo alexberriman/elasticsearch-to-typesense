@@ -1,0 +1,17 @@
+{
+  "name": "elastic-to-typesense",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "Alex Berriman <alexb@bezz.com.au>",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
+  }
+}
