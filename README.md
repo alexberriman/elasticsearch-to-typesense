@@ -53,13 +53,14 @@ const transformer = createTransformer({
 ```typescript
 import { createTransformer } from 'elasticsearch-to-typesense';
 
-// Initialize the transformer
+// Initialize the transformer with field mappings
+// Keys are Elasticsearch field names, values are Typesense field names
 const transformer = createTransformer({
   propertyMapping: {
-    'title': 'title',
-    'description': 'description',
-    'price': 'price',
-    'category': 'category_id'
+    'title': 'title',               // Map Elasticsearch 'title' to Typesense 'title'
+    'description': 'description',   // Same field name in both
+    'price': 'price',               // Same field name in both
+    'category': 'category_id'       // Map Elasticsearch 'category' to Typesense 'category_id'
   }
 });
 
@@ -107,11 +108,12 @@ if (result.ok) {
 import { createTransformer } from 'elasticsearch-to-typesense';
 
 const transformer = createTransformer({
+  // Keys are Elasticsearch field names, values are Typesense field names
   propertyMapping: {
-    'title': 'title',
-    'description': 'description',
-    'tags': 'tags',
-    'brand': 'brand_name'
+    'title': 'title',               // Same field name in both
+    'description': 'description',   // Same field name in both
+    'tags': 'tags',                 // Same field name in both
+    'brand': 'brand_name'           // Map Elasticsearch 'brand' to Typesense 'brand_name'
   }
 });
 
@@ -184,11 +186,19 @@ const elasticSchema = {
 };
 
 // Initialize the transformer with auto-mapping
+// This will automatically generate propertyMapping based on the schemas
 const transformer = createTransformer({
-  typesenseSchema,
-  elasticSchema,
-  autoMapProperties: true,
-  defaultScoreField: 'quality_score:desc'
+  typesenseSchema,  // Typesense schema definition
+  elasticSchema,    // Elasticsearch schema definition
+  autoMapProperties: true,  // Enable auto-mapping between schemas
+  defaultScoreField: 'quality_score:desc'  // Default score field for results
+  
+  // Note: When autoMapProperties is true, the library will automatically map:
+  // - Elasticsearch 'title' → Typesense 'title'
+  // - Elasticsearch 'description' → Typesense 'description'
+  // - Elasticsearch 'price' → Typesense 'price' 
+  // - Elasticsearch 'category' → Typesense 'category_id' (closest match)
+  // - Elasticsearch 'location' → Typesense 'location'
 });
 
 // Elasticsearch query with geo sorting
@@ -223,13 +233,13 @@ The `createTransformer` function accepts the following options:
 
 | Option | Type | Description | Default |
 |--------|------|-------------|---------|
-| `propertyMapping` | `Record<string, string>` | Maps Elasticsearch field names to Typesense field names | `{}` |
-| `typesenseSchema` | `TypesenseSchema` | Typesense schema object with field definitions | `undefined` |
-| `elasticSchema` | `ElasticSchema` | Elasticsearch mapping schema | `undefined` |
-| `autoMapProperties` | `boolean` | Whether to auto-generate field mappings based on schema names | `false` |
-| `fieldMatchStrategy` | `(elasticField: string, typesenseField: string) => boolean` | Custom function to determine if fields match for auto-mapping | `undefined` |
-| `defaultQueryString` | `string` | Default search query string | `*` |
-| `defaultScoreField` | `string` | Default field to use for scoring/ranking | `_text_match:desc` |
+| `propertyMapping` | `Record<string, string>` | Maps Elasticsearch field names (keys) to Typesense field names (values). When both schemas are provided, keys should be properties from the Elasticsearch schema and values should be properties from the Typesense schema. | `{}` |
+| `typesenseSchema` | `TypesenseSchema` | Typesense schema object with field definitions. Used for auto-mapping and determining field types. | `undefined` |
+| `elasticSchema` | `ElasticSchema` | Elasticsearch mapping schema. Used for auto-mapping and determining field types. | `undefined` |
+| `autoMapProperties` | `boolean` | Whether to auto-generate field mappings based on schema names. Requires both `typesenseSchema` and `elasticSchema` to be provided. | `false` |
+| `fieldMatchStrategy` | `(elasticField: string, typesenseField: string) => boolean` | Custom function to determine if fields match for auto-mapping. Receives an Elasticsearch field name and a Typesense field name and should return true if they should be mapped to each other. | `undefined` |
+| `defaultQueryString` | `string` | Default search query string to use when none is provided in the input query. | `*` |
+| `defaultScoreField` | `string` | Default field to use for scoring/relevance when no sorting is specified. | `_text_match:desc` |
 
 ## Typesense Query Parameters
 
@@ -248,16 +258,76 @@ The following Typesense search parameters are supported in the transformation:
 ### TypesenseSchema
 
 ```typescript
+/**
+ * Represents a Typesense schema definition
+ * https://typesense.org/docs/0.22.2/api/collections.html#create-a-collection
+ */
 interface TypesenseSchema {
-  fields: Array<{ name: string; type: string }>;
+  /**
+   * Array of field definitions for the Typesense collection
+   */
+  fields: Array<{ 
+    /**
+     * Field name in Typesense schema
+     */
+    name: string; 
+    
+    /**
+     * Field type (string, int32, float, bool, etc.)
+     */
+    type: string;
+    
+    /**
+     * Whether the field is optional (can be omitted in documents)
+     */
+    optional?: boolean;
+    
+    /**
+     * Whether the field is facetable
+     */
+    facet?: boolean;
+
+    /**
+     * Additional field properties
+     */
+    [key: string]: any;
+  }>;
+  
+  /**
+   * Default sorting field
+   */
+  default_sorting_field?: string;
 }
 ```
 
 ### ElasticSchema
 
 ```typescript
+/**
+ * Represents an Elasticsearch schema (mapping) definition
+ * https://www.elastic.co/guide/en/elasticsearch/reference/6.8/mapping.html
+ */
 interface ElasticSchema {
-  properties: Record<string, any>;
+  /**
+   * Properties mapping of the Elasticsearch index
+   * Keys are field names, values are field definitions
+   */
+  properties: Record<string, {
+    /**
+     * Field type (text, keyword, integer, float, boolean, etc.)
+     */
+    type?: string;
+    
+    /**
+     * Nested properties for object types
+     */
+    properties?: Record<string, any>;
+    
+    /**
+     * Additional field properties
+     */
+    [key: string]: any;
+  }>;
 }
 ```
 
