@@ -1,16 +1,26 @@
+import { applyAutoMapping } from "../utils/apply-auto-mapping";
+import { suggestTransformHints } from "../utils/suggest-transform-hints";
 import { createPaginationAndSort } from "../transformers/common";
 import { transformQueryRecursively } from "./transformer";
 import {
-  ElasticsearchQuery,
-  PropertyMapping,
   Result,
   TransformResult,
+  TransformerOptions,
   TransformerContext,
   TypesenseQuery,
 } from "./types";
 
-export const createTransformer = (propertyMapping: PropertyMapping) => {
-  const ctx: TransformerContext = { propertyMapping };
+export const createTransformer = (opts: TransformerOptions) => {
+  const propertyMapping =
+    opts.autoMapProperties && opts.elasticSchema && opts.typesenseSchema
+      ? applyAutoMapping(opts.elasticSchema, opts.typesenseSchema)
+      : opts.propertyMapping ?? {};
+
+  const ctx: TransformerContext = {
+    propertyMapping,
+    typesenseSchema: opts.typesenseSchema,
+    elasticSchema: opts.elasticSchema,
+  };
 
   const transform = (input: any): Result<TransformResult<TypesenseQuery>> => {
     if (typeof input !== "object" || input == null) {
@@ -19,17 +29,26 @@ export const createTransformer = (propertyMapping: PropertyMapping) => {
 
     const queryPart = input.query ?? {};
     const paginationPart = createPaginationAndSort(input);
-
     const main = transformQueryRecursively(queryPart, ctx);
+
+    const hints =
+      opts.elasticSchema && opts.typesenseSchema
+        ? suggestTransformHints(
+            opts.elasticSchema,
+            opts.typesenseSchema,
+            opts.fieldMatchStrategy
+          )
+        : [];
 
     return {
       ok: true,
       value: {
         query: {
+          q: opts.defaultQueryString ?? "*",
           ...main.query,
           ...paginationPart.query,
         },
-        warnings: [...main.warnings, ...paginationPart.warnings],
+        warnings: [...main.warnings, ...paginationPart.warnings, ...hints],
       },
     };
   };

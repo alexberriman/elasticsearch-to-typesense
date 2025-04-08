@@ -43,6 +43,7 @@ export const transformQueryRecursively = (
 
   return {
     query: {
+      q: "*",
       filter_by: results.filter(Boolean).join(" && ") || undefined,
     },
     warnings,
