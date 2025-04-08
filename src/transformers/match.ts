@@ -4,7 +4,7 @@ import {
   TypesenseQuery,
 } from "../core/types";
 import { resolveMappedField } from "../utils/resolve-mapped-field";
-import { quoteValue } from "../utils/quote-value";
+import { formatTypesenseFilterValue } from "../utils/quote-value";
 
 export const transformMatch = (
   match: Record<string, any>,
@@ -20,7 +20,7 @@ export const transformMatch = (
       continue;
     }
 
-    filters.push(`${mapped}:=${quoteValue(value)}`);
+    filters.push(`${mapped}:=${formatTypesenseFilterValue(value)}`);
   }
 
   return {

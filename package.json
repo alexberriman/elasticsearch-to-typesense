@@ -51,6 +51,7 @@
     "prettier": "^3.5.3",
     "semantic-release": "^22.0.12",
     "typescript": "^5.8.3",
+    "typesense": "^2.0.3",
     "vitest": "^3.1.1"
   }
 }

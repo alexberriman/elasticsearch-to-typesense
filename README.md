@@ -16,6 +16,8 @@ This library is designed to translate Elasticsearch 6.8 queries to Typesense v28
   - Bool queries (must, should, must_not)
   - Exists queries
   - Function score queries
+  - Multi-match queries (across multiple fields)
+  - Prefix queries (for prefix matching)
 - Mapping between Elasticsearch and Typesense field names
 - Auto-generation of field mappings
 - Support for geo sorting
@@ -99,6 +101,61 @@ if (result.ok) {
 }
 ```
 
+### Multi-Match and Prefix Queries
+
+```typescript
+import { createTransformer } from 'elasticsearch-to-typesense';
+
+const transformer = createTransformer({
+  propertyMapping: {
+    'title': 'title',
+    'description': 'description',
+    'tags': 'tags',
+    'brand': 'brand_name'
+  }
+});
+
+// Multi-match query (search across multiple fields with weights)
+const multiMatchQuery = {
+  query: {
+    multi_match: {
+      query: "wireless headphones",
+      fields: ["title^3", "description", "tags^2"],
+      type: "best_fields",
+      fuzziness: 1
+    }
+  }
+};
+
+// Prefix query (for autocomplete/suggestions)
+const prefixQuery = {
+  query: {
+    prefix: {
+      brand: {
+        value: "app",
+        boost: 2.0
+      }
+    }
+  }
+};
+
+// Transform queries
+const multiMatchResult = transformer.transform(multiMatchQuery);
+const prefixResult = transformer.transform(prefixQuery);
+
+if (multiMatchResult.ok) {
+  // Will generate query_by and query_by_weights for Typesense
+  console.log('Multi-match query:', multiMatchResult.value.query);
+  // Example output: { q: "wireless headphones", query_by: "title,description,tags", query_by_weights: "3,1,2" }
+}
+
+if (prefixResult.ok) {
+  // Will add wildcard for prefix matching
+  console.log('Prefix query:', prefixResult.value.query);
+  // Example output: { q: "app*", query_by: "brand_name", query_by_weights: "2" }
+}
+```
+
 ### Using with Typesense Schema
 
 ```typescript
@@ -174,6 +231,20 @@ The `createTransformer` function accepts the following options:
 | `defaultQueryString` | `string` | Default search query string | `*` |
 | `defaultScoreField` | `string` | Default field to use for scoring/ranking | `_text_match:desc` |
 
+## Typesense Query Parameters
+
+The following Typesense search parameters are supported in the transformation:
+
+| Parameter | Description |
+|-----------|-------------|
+| `q` | The search query (defaults to "*" for match all) |
+| `filter_by` | Filter conditions (generated from match, term, range, etc.) |
+| `sort_by` | Sort order (generated from Elasticsearch sort) |
+| `per_page` | Number of results per page (from Elasticsearch size) |
+| `page` | Page number (calculated from Elasticsearch from/size) |
+| `query_by` | Fields to search in (used by multi_match and prefix queries) |
+| `query_by_weights` | Relative weights for fields (used by multi_match with boost values) |
+
 ### TypesenseSchema
 
 ```typescript
@@ -201,6 +272,8 @@ interface ElasticSchema {
 | `bool` | Combination of filter clauses with AND/OR/NOT operators |
 | `exists` | Filter by field presence |
 | `function_score` | Base query (functions not supported) |
+| `multi_match` | Search across multiple fields with weights |
+| `prefix` | Prefix search with wildcard matching |
 
 ## Limitations
 

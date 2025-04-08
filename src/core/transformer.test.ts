@@ -7,6 +7,7 @@ import * as rangeTransformer from "../transformers/range";
 import * as boolTransformer from "../transformers/bool";
 import * as functionScoreTransformer from "../transformers/function-score";
 import * as existsTransformer from "../transformers/exists";
+import * as multiMatchTransformer from "../transformers/multi-match";
 import * as normalizeParentheses from "../utils/normalize-parentheses";
 
 // Mock all the transformers
@@ -32,6 +33,10 @@ vi.mock("../transformers/function-score", () => ({
 
 vi.mock("../transformers/exists", () => ({
   transformExists: vi.fn(),
+}));
+
+vi.mock("../transformers/multi-match", () => ({
+  transformMultiMatch: vi.fn(),
 }));
 
 vi.mock("../utils/normalize-parentheses", () => ({
@@ -274,5 +279,44 @@ describe("transformQueryRecursively", () => {
     const result = transformQueryRecursively(esQuery, createContext());
 
     expect(result.query.filter_by).toBeUndefined();
+  });
+
+  it("should handle search query from multi_match", () => {
+    vi.mocked(multiMatchTransformer.transformMultiMatch).mockReturnValue({
+      query: {
+        q: "search term",
+        query_by: "field1,field2",
+        query_by_weights: "2,1",
+      },
+      warnings: [],
+    });
+    vi.mocked(matchTransformer.transformMatch).mockReturnValue({
+      query: { filter_by: "status:=active" },
+      warnings: [],
+    });
+
+    const esQuery = {
+      multi_match: {
+        fields: ["field1^2", "field2"],
+        query: "search term",
+      },
+      match: { status: "active" },
+    };
+    const result = transformQueryRecursively(esQuery, createContext());
+
+    expect(multiMatchTransformer.transformMultiMatch).toHaveBeenCalledWith(
+      { fields: ["field1^2", "field2"], query: "search term" },
+      expect.anything()
+    );
+
+    // Should use search term from multi_match
+    expect(result.query.q).toBe("search term");
+
+    // Should include additional parameters from multi_match
+    expect(result.query.query_by).toBe("field1,field2");
+    expect(result.query.query_by_weights).toBe("2,1");
+
+    // Should still include filter_by from match
+    expect(result.query.filter_by).toBe("status:=active");
   });
 });
