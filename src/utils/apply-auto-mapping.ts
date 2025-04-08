@@ -6,7 +6,7 @@ export const applyAutoMapping = (
 ): Record<string, string> => {
   const mapping: Record<string, string> = {};
 
-  const typesenseFieldSet = new Set(typesense.fields.map((f) => f.name));
+  // Create mapping by finding matching field names
 
   Object.keys(elastic.properties).forEach((elasticField) => {
     for (const tsField of typesense.fields) {

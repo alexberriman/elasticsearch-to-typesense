@@ -1,5 +1,4 @@
 import { resolveMappedField } from "../utils/resolve-mapped-field";
-import { coerceValueFromSchema } from "../utils/coerce-value-from-schema";
 import {
   TransformerContext,
   TransformResult,

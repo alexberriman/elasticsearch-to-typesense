@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { transformExists } from "./exists";
-import { TransformerContext, TypesenseField } from "../core/types";
+import { TransformerContext } from "../core/types";
 
 describe("transformExists", () => {
   const createContext = (
