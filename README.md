@@ -25,7 +25,7 @@ This library is designed to translate Elasticsearch 6.8 queries to Typesense v28
 ## Installation
 
 ```bash
-npm install elastic-to-typesense
+npm install elasticsearch-to-typesense
 ```
 
 ## Getting Started
@@ -33,7 +33,7 @@ npm install elastic-to-typesense
 To use the library, you need to create a transformer instance with your desired configuration:
 
 ```typescript
-import { createTransformer } from 'elastic-to-typesense';
+import { createTransformer } from 'elasticsearch-to-typesense';
 
 const transformer = createTransformer({
   // Configuration options here
@@ -49,7 +49,7 @@ const transformer = createTransformer({
 ### Basic Query Transformation
 
 ```typescript
-import { createTransformer } from 'elastic-to-typesense';
+import { createTransformer } from 'elasticsearch-to-typesense';
 
 // Initialize the transformer
 const transformer = createTransformer({
@@ -102,7 +102,7 @@ if (result.ok) {
 ### Using with Typesense Schema
 
 ```typescript
-import { createTransformer } from 'elastic-to-typesense';
+import { createTransformer } from 'elasticsearch-to-typesense';
 
 // Define your Typesense schema
 const typesenseSchema = {
@@ -217,8 +217,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/alexberriman/elastic-to-typesense.git
-cd elastic-to-typesense
+git clone https://github.com/alexberriman/elasticsearch-to-typesense.git
+cd elasticsearch-to-typesense
 ```
 
 2. Install dependencies:

@@ -27,7 +27,7 @@ Please provide the Elasticsearch query you're trying to transform:
 ```
 
 **Environment**
-- elastic-to-typesense version: [e.g. 0.1.0]
+- elasticsearch-to-typesense version: [e.g. 0.1.0]
 - Node.js version: [e.g. 18.15.0]
 - TypeScript version (if applicable): [e.g. 5.0.0]
 - Typesense version: [e.g. 28.0.0]
