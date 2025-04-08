@@ -10,7 +10,6 @@ import { transformRange } from "../transformers/range";
 import { transformBool } from "../transformers/bool";
 import { transformFunctionScore } from "../transformers/function-score";
 import { normalizeParentheses } from "../utils/normalize-parentheses";
-import { transformTerm } from "../transformers/term";
 import { transformExists } from "../transformers/exists";
 
 type TransformerFn = (
@@ -24,7 +23,6 @@ const transformers: Record<string, TransformerFn> = {
   range: transformRange,
   bool: transformBool,
   function_score: transformFunctionScore,
-  // term: transformTerm,
   exists: transformExists,
 };
 

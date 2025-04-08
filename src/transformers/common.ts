@@ -1,6 +1,4 @@
 import { resolveMappedField } from "../utils/resolve-mapped-field";
-import { quoteValue } from "../utils/quote-value";
-import { coerceValueFromSchema } from "../utils/coerce-value-from-schema";
 import { transformGeoSort } from "../utils/transform-geo-sort";
 import { TransformerContext } from "../core/types";
 
@@ -11,7 +9,6 @@ export const createPaginationAndSort = (
   const warnings: string[] = [];
   const query: Record<string, any> = {};
 
-  // Pagination
   const from = input.from;
   const size = input.size;
 
@@ -20,7 +17,6 @@ export const createPaginationAndSort = (
     query.page = Math.floor(from / size) + 1;
   }
 
-  // Sort
   const sort = input.sort;
   if (Array.isArray(sort)) {
     const sortBy = sort
@@ -35,7 +31,6 @@ export const createPaginationAndSort = (
         }
 
         if (field === "_score") {
-          // Use custom default score field if provided, otherwise fallback to _text_match
           return ctx.defaultScoreField || "_text_match:desc";
         }
 

@@ -10,7 +10,7 @@ export const resolveReservedKeyword = (
 ): unknown => {
   if (!isReservedKeyword(value)) return value;
 
-  if (!typesenseSchema) return value; // fallback: leave it as-is
+  if (!typesenseSchema) return value;
 
   const tsField = typesenseSchema.fields.find((f) => f.name === field);
   if (!tsField) return value;
@@ -22,6 +22,6 @@ export const resolveReservedKeyword = (
     case "float":
       return Date.now() * 1.0;
     default:
-      return new Date().toISOString(); // string fallback for string/date fields
+      return new Date().toISOString();
   }
 };

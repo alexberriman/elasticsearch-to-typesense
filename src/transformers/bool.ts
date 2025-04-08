@@ -42,9 +42,8 @@ export const transformBool = (
           const values = parsed.map((m) => m![2]);
           filters.push(`${field}:!=[${values.join(",")}]`);
         } else {
-          // ✅ Filter out clauses that contain range operators, which can't be negated in Typesense
           const safe = [...subFilterSet].filter(
-            (clause) => !/[<>]=?|:[^=]/.test(clause) // filters out >, <, >=, <=, :=, etc
+            (clause) => !/[<>]=?|:[^=]/.test(clause)
           );
 
           if (safe.length > 0) {

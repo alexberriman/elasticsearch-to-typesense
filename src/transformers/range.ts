@@ -13,7 +13,7 @@ export const transformRange = (
   ctx: TransformerContext
 ): TransformResult<Partial<TypesenseQuery>> => {
   const warnings: string[] = [];
-  const parts: Set<string> = new Set(); // avoid duplicates
+  const parts: Set<string> = new Set();
 
   for (const [field, conditions] of Object.entries(range)) {
     const mapped = resolveMappedField(field, ctx);
@@ -56,7 +56,7 @@ export const transformRange = (
         }
 
         if (clause) {
-          parts.add(clause); // dedup here
+          parts.add(clause);
         }
       }
     } else {

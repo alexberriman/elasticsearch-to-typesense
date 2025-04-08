@@ -29,7 +29,7 @@ export const transformExists = (
     tsField?.type === "float";
 
   const filter_by = isNumeric
-    ? `${resolvedField}:>0` // Better fallback for numeric fields
+    ? `${resolvedField}:>0`
     : `${resolvedField}:!=null`;
 
   return {

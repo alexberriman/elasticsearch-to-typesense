@@ -12,7 +12,6 @@ export const coerceValueFromSchema = (
 
   const { type } = tsField;
 
-  // Normalize "null"/"undefined" string values
   const isNullish =
     value === null ||
     value === undefined ||
@@ -35,7 +34,6 @@ export const coerceValueFromSchema = (
     }
   }
 
-  // Coerce based on schema type
   switch (type) {
     case "int32":
     case "int64":
