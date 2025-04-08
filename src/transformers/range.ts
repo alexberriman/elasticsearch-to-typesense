@@ -4,6 +4,7 @@ import {
   TypesenseQuery,
 } from "../core/types";
 import { resolveReservedKeyword } from "../utils/handle-reserved-keywords";
+import { resolveMappedField } from "../utils/resolve-mapped-field";
 
 export const transformRange = (
   range: Record<string, any>,
@@ -13,7 +14,12 @@ export const transformRange = (
   const parts: string[] = [];
 
   for (const [field, conditions] of Object.entries(range)) {
-    const mapped = ctx.propertyMapping[field] ?? field;
+    const mapped = resolveMappedField(field, ctx);
+    if (!mapped) {
+      warnings.push(`Skipped unmapped field "${field}"`);
+      continue;
+    }
+
     const filters: string[] = [];
 
     if (typeof conditions === "object" && conditions !== null) {

@@ -32,7 +32,7 @@ export const createTransformer = (opts: TransformerOptions) => {
     const main = transformQueryRecursively(queryPart, ctx);
 
     const hints =
-      opts.elasticSchema && opts.typesenseSchema
+      opts.autoMapProperties && opts.elasticSchema && opts.typesenseSchema
         ? suggestTransformHints(
             opts.elasticSchema,
             opts.typesenseSchema,
@@ -44,7 +44,6 @@ export const createTransformer = (opts: TransformerOptions) => {
       ok: true,
       value: {
         query: {
-          q: opts.defaultQueryString ?? "*",
           ...main.query,
           ...paginationPart.query,
         },

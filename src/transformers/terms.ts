@@ -3,6 +3,7 @@ import {
   TransformResult,
   TypesenseQuery,
 } from "../core/types";
+import { resolveMappedField } from "../utils/resolve-mapped-field";
 
 export const transformTerms = (
   terms: Record<string, string[]>,
@@ -12,7 +13,12 @@ export const transformTerms = (
   const parts: string[] = [];
 
   for (const [field, values] of Object.entries(terms)) {
-    const mapped = ctx.propertyMapping[field] ?? field;
+    const mapped = resolveMappedField(field, ctx);
+    if (!mapped) {
+      warnings.push(`Skipped unmapped field "${field}"`);
+      continue;
+    }
+
     if (Array.isArray(values)) {
       parts.push(`${mapped}:=[${values.join(",")}]`);
     } else {
