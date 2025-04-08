@@ -1,0 +1,32 @@
+# Development files
+.github/
+.vscode/
+.idea/
+tests/
+src/
+*.log
+coverage/
+.DS_Store
+.env*
+
+# Configuration files
+eslint.config.js
+.releaserc.json
+vitest.config.ts
+vitest.setup.ts
+.eslintignore
+.prettierignore
+.prettierrc
+.travis.yml
+tsconfig.json
+tsconfig.test.json
+
+# Test files
+**/*.test.ts
+**/*.spec.ts
+
+# Built files that aren't needed
+dist/**/*.test.js
+dist/**/*.test.d.ts
+dist/**/*.spec.js
+dist/**/*.spec.d.ts
