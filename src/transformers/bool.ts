@@ -26,12 +26,28 @@ export const transformBool = (
     }
 
     if (subFilterSet.size > 0) {
-      const joined = [...subFilterSet].join(
-        key === "should" ? " || " : key === "must_not" ? " || " : " && "
-      );
       if (key === "must_not") {
-        filters.push(`!(${joined})`);
+        // Try to detect and convert disjunction of same-field match clauses
+        const parsed = [...subFilterSet].map((clause) =>
+          clause.match(/^\((\w+):=("[^"]+"|\w+)\)$/)
+        );
+
+        const allSameField =
+          parsed.length > 1 &&
+          parsed.every((m) => m && m[1] === parsed[0]?.[1]);
+
+        if (allSameField) {
+          const field = parsed[0]![1];
+          const values = parsed.map((m) => m![2]);
+          filters.push(`${field}:!=[${values.join(",")}]`);
+        } else {
+          const joined = [...subFilterSet].join(" || ");
+          filters.push(`!(${joined})`);
+        }
       } else {
+        const joined = [...subFilterSet].join(
+          key === "should" ? " || " : " && "
+        );
         filters.push(`(${joined})`);
       }
     }
