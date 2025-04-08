@@ -1,4 +1,3 @@
-import { quoteValue } from "../utils/quote-value";
 import { resolveMappedField } from "../utils/resolve-mapped-field";
 import {
   TransformerContext,
@@ -7,10 +6,10 @@ import {
 } from "../core/types";
 
 export const transformTerm = (
-  query: any, // e.g., { activity_age_from: 0 }
+  query: any,
   ctx: TransformerContext
 ): TransformResult<Partial<TypesenseQuery>> => {
-  const [[field, value]] = Object.entries(query); // no `.term`
+  const [[field, value]] = Object.entries(query);
   const resolvedField = resolveMappedField(field, ctx);
 
   if (!resolvedField) {
@@ -20,13 +19,18 @@ export const transformTerm = (
     };
   }
 
-  const isBoolean = typeof value === "boolean";
-  const isNumber = typeof value === "number";
-  const safeValue = isBoolean || isNumber ? value : quoteValue(value);
+  // Format value based on type
+  let formattedValue: string;
+  
+  if (typeof value === "string") {
+    formattedValue = `"${value}"`; // String values must be quoted
+  } else {
+    formattedValue = `${value}`; // Numbers and booleans should be unquoted
+  }
 
   return {
     query: {
-      filter_by: `${resolvedField}:=${safeValue}`,
+      filter_by: `${resolvedField}:=${formattedValue}`,
     },
     warnings: [],
   };

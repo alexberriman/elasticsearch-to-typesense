@@ -24,7 +24,7 @@ const transformers: Record<string, TransformerFn> = {
   range: transformRange,
   bool: transformBool,
   function_score: transformFunctionScore,
-  term: transformTerm,
+  // term: transformTerm,
   exists: transformExists,
 };
 

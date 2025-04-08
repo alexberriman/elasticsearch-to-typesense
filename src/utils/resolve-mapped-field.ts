@@ -9,11 +9,5 @@ export const resolveMappedField = (
   const valid =
     ctx.typesenseSchema?.fields.some((f) => f.name === mapped) ?? true;
 
-  if (!valid) {
-    console.warn(
-      `[transform] Field "${field}" mapped to "${mapped}" was not found in Typesense schema`
-    );
-  }
-
   return valid ? mapped : undefined;
 };

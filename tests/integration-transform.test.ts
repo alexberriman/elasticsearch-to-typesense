@@ -33,9 +33,9 @@ describe("integration", () => {
     const result = transformer.transform(query);
     expect(result.ok).toBe(true);
 
+    expect(result.ok).toBeTruthy();
     if (!result.ok) {
-      console.error("❌ Transformation failed:", result.error);
-      return;
+      throw Error("unable to transformer");
     }
 
     const typesenseQuery = result.value.query;
@@ -43,7 +43,6 @@ describe("integration", () => {
       "✅ Transformed Query:",
       JSON.stringify(typesenseQuery, null, 2)
     );
-    console.log("⚠️ Warnings:", result.value.warnings);
 
     const url = new URL(
       `${TYPESENSE_HOST}/collections/${COLLECTION_NAME}/documents/search`
@@ -59,10 +58,6 @@ describe("integration", () => {
     });
 
     const data = await response.json();
-
-    console.log("📡 Response status:", response.status);
-    console.log("📄 Response body:", data);
-
     expect(response.ok).toBe(true);
     expect(data).toHaveProperty("hits");
   });

@@ -32,14 +32,6 @@ export const transformExists = (
     ? `${resolvedField}:>0` // Better fallback for numeric fields
     : `${resolvedField}:!=null`;
 
-  console.log(
-    "tsField",
-    tsField,
-    "resolvedField",
-    resolvedField,
-    "filter_by",
-    filter_by
-  );
   return {
     query: {
       filter_by,
