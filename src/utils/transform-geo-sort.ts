@@ -25,7 +25,8 @@ export const transformGeoSort = (
   const [fieldName, coordinates] = geoFieldEntries[0];
 
   if (
-    !coordinates ||
+    coordinates === undefined ||
+    coordinates === null ||
     typeof coordinates.lat !== "number" ||
     typeof coordinates.lon !== "number"
   ) {
@@ -33,13 +34,13 @@ export const transformGeoSort = (
     return { warnings };
   }
 
-  const order = sortOptions.order || "asc";
+  const order = sortOptions.order !== undefined ? sortOptions.order : "asc";
   if (order !== "asc" && order !== "desc") {
     warnings.push(`Invalid sort order: ${order}. Using 'asc' instead.`);
   }
 
   const mappedField = resolveMappedField(fieldName, ctx);
-  if (!mappedField) {
+  if (mappedField === undefined || mappedField === null) {
     warnings.push(`Unmapped geo field: ${fieldName}`);
     return { warnings };
   }

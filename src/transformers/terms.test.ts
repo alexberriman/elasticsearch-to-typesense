@@ -91,10 +91,14 @@ describe("transformTerms", () => {
   });
 
   it("returns warning when values is not an array", () => {
-    const query = { field_name: "not_an_array" } as any;
+    const query = { field_name: "not_an_array" };
     const ctx = createContext({ field_name: "mapped_field" });
 
-    const result = transformTerms(query, ctx);
+    // Use type assertion to match expected type
+    const result = transformTerms(
+      query as unknown as Record<string, Array<string | number | boolean>>,
+      ctx
+    );
 
     expect(result).toEqual({
       query: {

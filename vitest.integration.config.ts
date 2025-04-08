@@ -12,6 +12,6 @@ export default defineConfig({
     },
     mockReset: true,
     restoreMocks: true,
-    setupFiles: ["./vitest.setup.ts"]
+    setupFiles: ["./vitest.setup.ts"],
   },
 });

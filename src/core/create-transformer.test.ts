@@ -114,13 +114,15 @@ describe("createTransformer", () => {
       const result = transformerInstance.transform(input);
 
       expect(result.ok).toBe(true);
-      expect(result.value).toEqual({
-        query: {
-          ...mockQuery,
-          per_page: 10,
-        },
-        warnings: ["Warning 1", ...mockHints],
-      });
+      if (result.ok) {
+        expect(result.value).toEqual({
+          query: {
+            ...mockQuery,
+            per_page: 10,
+          },
+          warnings: ["Warning 1", ...mockHints],
+        });
+      }
 
       expect(transformer.transformQueryRecursively).toHaveBeenCalledWith(
         input.query,

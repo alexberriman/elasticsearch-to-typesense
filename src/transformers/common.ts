@@ -30,15 +30,17 @@ export const createPaginationAndSort = (
             ctx
           );
           warnings.push(...geoSortResult.warnings);
-          return geoSortResult.sort || null;
+          return geoSortResult.sort !== undefined ? geoSortResult.sort : null;
         }
 
         if (field === "_score") {
-          return ctx.defaultScoreField || "_text_match:desc";
+          return ctx.defaultScoreField !== undefined
+            ? ctx.defaultScoreField
+            : "_text_match:desc";
         }
 
         const mapped = resolveMappedField(field, ctx);
-        if (!mapped) {
+        if (mapped === undefined || mapped === null) {
           warnings.push(`Skipped unmapped sort field "${field}"`);
           return null;
         }

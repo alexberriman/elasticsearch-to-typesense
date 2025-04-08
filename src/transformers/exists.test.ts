@@ -18,6 +18,7 @@ describe("transformExists", () => {
 
   it("transforms exists query for string field", () => {
     const query = { field: "field_name" };
+    // @ts-expect-error - Test schema structure
     const ctx = createContext(
       { field_name: "mapped_field" },
       { fields: [{ name: "mapped_field", type: "string" }] }
@@ -35,6 +36,7 @@ describe("transformExists", () => {
 
   it("transforms exists query for integer field", () => {
     const query = { field: "field_name" };
+    // @ts-expect-error - Test schema structure
     const ctx = createContext(
       { field_name: "mapped_field" },
       { fields: [{ name: "mapped_field", type: "int32" }] }

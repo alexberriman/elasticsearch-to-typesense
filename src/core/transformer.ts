@@ -6,6 +6,7 @@ import {
 } from "./types";
 import { transformMatch } from "../transformers/match";
 import { transformTerms } from "../transformers/terms";
+import { transformTerm } from "../transformers/term";
 import { transformRange } from "../transformers/range";
 import { transformBool } from "../transformers/bool";
 import { transformFunctionScore } from "../transformers/function-score";
@@ -22,6 +23,7 @@ type TransformerFn = (
 const transformers: Record<string, TransformerFn> = {
   match: transformMatch,
   terms: transformTerms,
+  term: transformTerm,
   range: transformRange,
   bool: transformBool,
   function_score: transformFunctionScore,
@@ -31,26 +33,42 @@ const transformers: Record<string, TransformerFn> = {
 };
 
 export const transformQueryRecursively = (
-  esQuery: ElasticsearchQuery,
+  query: unknown,
   ctx: TransformerContext
 ): TransformResult<TypesenseQuery> => {
+  // Type checking and handling empty objects
+  const esQuery: ElasticsearchQuery =
+    typeof query === "object" && query !== null
+      ? (query as ElasticsearchQuery)
+      : {};
   const results = new Set<string>();
   const warnings: string[] = [];
   let searchQuery = "*"; // Default to match all query
   const dynamicParams: Record<string, any> = {};
 
   for (const key in esQuery) {
-    const transformer = transformers[key];
-    if (transformer) {
-      const result = transformer((esQuery as any)[key], ctx);
+    // Skip if property doesn't exist or isn't own property
+    if (!Object.prototype.hasOwnProperty.call(esQuery, key)) continue;
+
+    const transformer = Object.prototype.hasOwnProperty.call(transformers, key)
+      ? transformers[key]
+      : undefined;
+
+    if (transformer !== undefined) {
+      // Safe cast for known transformers
+      const queryValue = esQuery[key];
+      const result = transformer(queryValue, ctx);
 
       // Handle filter clauses
-      if (result.query.filter_by) {
+      if (
+        typeof result.query.filter_by === "string" &&
+        result.query.filter_by.length > 0
+      ) {
         results.add(result.query.filter_by);
       }
 
       // Handle search query terms (from multi_match)
-      if (result.query.q && result.query.q !== "*") {
+      if (typeof result.query.q === "string" && result.query.q !== "*") {
         searchQuery = result.query.q;
       }
 

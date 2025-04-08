@@ -4,5 +4,8 @@ export const resolveNestedField = (
 ): any => {
   return fieldPath
     .split(".")
-    .reduce((obj, key) => (obj ? obj[key] : undefined), doc);
+    .reduce(
+      (obj, key) => (obj !== undefined && obj !== null ? obj[key] : undefined),
+      doc
+    );
 };

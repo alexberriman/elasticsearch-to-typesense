@@ -6,14 +6,18 @@ import { TransformerContext } from "../core/types";
 vi.mock("../utils/resolve-mapped-field", () => ({
   resolveMappedField: vi.fn((field, _ctx) => {
     // Map the known fields and return null for unknown fields
-    const mapping = {
+    const mapping: Record<string, string> = {
       activity_title: "title",
       activity_sporttype_name: "sport_type",
       activity_type_name: "type_name",
       activity_subtitle: "subtitle",
       activity_nic_name: "nickname",
     };
-    return mapping[field] || null;
+    // Check if field exists in mapping before accessing
+    if (typeof field === "string" && field in mapping) {
+      return mapping[field];
+    }
+    return null;
   }),
 }));
 

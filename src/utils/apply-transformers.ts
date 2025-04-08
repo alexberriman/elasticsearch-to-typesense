@@ -21,13 +21,14 @@ export const applyTransformers = (
 
   for (const [key, value] of Object.entries(esQuery)) {
     const transformer = transformers[key];
-    if (!transformer) {
+    if (transformer === undefined) {
       warnings.push(`Unsupported clause: "${key}"`);
       continue;
     }
 
     const { query, warnings: w } = transformer(value, ctx);
-    if (query.filter_by) filterParts.push(query.filter_by);
+    if (typeof query.filter_by === "string" && query.filter_by !== "")
+      filterParts.push(query.filter_by);
     warnings.push(...w);
   }
 

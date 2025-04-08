@@ -5,8 +5,10 @@ import {
 } from "../core/types";
 import { resolveMappedField } from "../utils/resolve-mapped-field";
 
+// Type should be correctly defined as Record<string, Array<string|number|boolean>>
+// to match the actual usage in tests
 export const transformTerms = (
-  terms: Record<string, string[]>,
+  terms: Record<string, Array<string | number | boolean>>,
   ctx: TransformerContext
 ): TransformResult<Partial<TypesenseQuery>> => {
   const warnings: string[] = [];
@@ -14,7 +16,7 @@ export const transformTerms = (
 
   for (const [field, values] of Object.entries(terms)) {
     const mapped = resolveMappedField(field, ctx);
-    if (!mapped) {
+    if (mapped === undefined || mapped === null) {
       warnings.push(`Skipped unmapped field "${field}"`);
       continue;
     }

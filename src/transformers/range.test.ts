@@ -30,7 +30,16 @@ describe("transformRange", () => {
       "resolveReservedKeyword"
     ).mockImplementation((_field, value) => value);
     vi.spyOn(coerceValueModule, "coerceValueFromSchema").mockImplementation(
-      (_field, value) => value
+      (_field, value): string | number | boolean => {
+        if (
+          typeof value === "string" ||
+          typeof value === "number" ||
+          typeof value === "boolean"
+        ) {
+          return value;
+        }
+        return String(value);
+      }
     );
 
     const result = transformRange(query, ctx);
@@ -75,7 +84,16 @@ describe("transformRange", () => {
       "resolveReservedKeyword"
     ).mockImplementation((_field, value) => value);
     vi.spyOn(coerceValueModule, "coerceValueFromSchema").mockImplementation(
-      (_field, value) => value
+      (_field, value): string | number | boolean => {
+        if (
+          typeof value === "string" ||
+          typeof value === "number" ||
+          typeof value === "boolean"
+        ) {
+          return value;
+        }
+        return String(value);
+      }
     );
 
     const result = transformRange(query, ctx);
@@ -114,7 +132,16 @@ describe("transformRange", () => {
       "resolveReservedKeyword"
     ).mockImplementation((_field, value) => value);
     vi.spyOn(coerceValueModule, "coerceValueFromSchema").mockImplementation(
-      (_field, value) => value
+      (_field, value): string | number | boolean => {
+        if (
+          typeof value === "string" ||
+          typeof value === "number" ||
+          typeof value === "boolean"
+        ) {
+          return value;
+        }
+        return String(value);
+      }
     );
 
     const result = transformRange(query, ctx);

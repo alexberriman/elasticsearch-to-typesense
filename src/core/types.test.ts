@@ -17,7 +17,9 @@ describe("types", () => {
       };
 
       expect(result.ok).toBe(true);
-      expect((result as any).value).toBe(42);
+      if (result.ok) {
+        expect(result.value).toBe(42);
+      }
     });
 
     it("should create an error result", () => {
@@ -27,7 +29,9 @@ describe("types", () => {
       };
 
       expect(result.ok).toBe(false);
-      expect((result as any).error).toBe("Something went wrong");
+      if (!result.ok) {
+        expect(result.error).toBe("Something went wrong");
+      }
     });
   });
 

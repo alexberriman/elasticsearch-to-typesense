@@ -266,7 +266,7 @@ interface ElasticSchema {
 | Elasticsearch Query | Typesense Equivalent |
 |---------------------|----------------------|
 | `match` | Filter by equality |
-| `term` | Filter by exact match |
+| `term` | Filter by exact match (singular value) |
 | `terms` | Filter by array of values |
 | `range` | Filter by range operators (gt, gte, lt, lte) |
 | `bool` | Combination of filter clauses with AND/OR/NOT operators |

@@ -12,7 +12,9 @@ import {
 
 export const createTransformer = (opts: TransformerOptions) => {
   const propertyMapping =
-    opts.autoMapProperties && opts.elasticSchema && opts.typesenseSchema
+    opts.autoMapProperties === true &&
+    opts.elasticSchema != null &&
+    opts.typesenseSchema != null
       ? applyAutoMapping(opts.elasticSchema, opts.typesenseSchema)
       : (opts.propertyMapping ?? {});
 
@@ -23,17 +25,25 @@ export const createTransformer = (opts: TransformerOptions) => {
     defaultScoreField: opts.defaultScoreField,
   };
 
-  const transform = (input: any): Result<TransformResult<TypesenseQuery>> => {
+  const transform = (
+    input: unknown
+  ): Result<TransformResult<TypesenseQuery>> => {
     if (typeof input !== "object" || input == null) {
       return { ok: false, error: "Input must be an object" };
     }
 
-    const queryPart = input.query ?? {};
+    // Safely cast input after validation
+    const elasticQuery = input as Record<string, unknown>;
+    // Safely create an empty object that satisfies the ElasticsearchQuery type
+    const emptyQuery: Record<string, unknown> = {};
+    const queryPart = elasticQuery.query ?? emptyQuery;
     const paginationPart = createPaginationAndSort(input, ctx);
     const main = transformQueryRecursively(queryPart, ctx);
 
     const hints =
-      opts.autoMapProperties && opts.elasticSchema && opts.typesenseSchema
+      opts.autoMapProperties === true &&
+      opts.elasticSchema != null &&
+      opts.typesenseSchema != null
         ? suggestTransformHints(
             opts.elasticSchema,
             opts.typesenseSchema,
