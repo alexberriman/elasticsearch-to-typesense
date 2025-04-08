@@ -20,7 +20,7 @@ describe("transformMatch", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: 'mapped_field:="value"',
+        filter_by: "mapped_field:=value",
       },
       warnings: [],
     });
@@ -38,8 +38,8 @@ describe("transformMatch", () => {
 
     const result = transformMatch(query, ctx);
 
-    expect(result.query.filter_by).toContain('mapped_field1:="value1"');
-    expect(result.query.filter_by).toContain('mapped_field2:="value2"');
+    expect(result.query.filter_by).toContain("mapped_field1:=value1");
+    expect(result.query.filter_by).toContain("mapped_field2:=value2");
     expect(result.query.filter_by).toContain("&&");
     expect(result.warnings).toEqual([]);
   });
@@ -105,7 +105,7 @@ describe("transformMatch", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: 'mapped_field:="value1"',
+        filter_by: "mapped_field:=value1",
       },
       warnings: ['Skipped unmapped field "unknown_field"'],
     });

@@ -23,6 +23,8 @@ export type TypesenseQuery = {
   sort_by?: string;
   per_page?: number;
   page?: number;
+  query_by?: string;
+  query_by_weights?: string;
 };
 
 export interface TypesenseSchema {

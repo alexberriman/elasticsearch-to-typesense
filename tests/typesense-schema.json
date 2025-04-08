@@ -22,6 +22,11 @@
     { "name": "sport_type_name", "type": "string" },
     { "name": "facility_id", "type": "string" },
     { "name": "is_verified", "type": "bool" },
+    { "name": "is_major_sport_event", "type": "bool" },
+    { "name": "is_personal", "type": "bool" },
+    { "name": "is_competition", "type": "bool" },
+    { "name": "intentions", "type": "string[]" },
+    { "name": "difficulties", "type": "string[]" },
     { "name": "visibility_id", "type": "string" },
     { "name": "status", "type": "string" },
     { "name": "total_capacity", "type": "int32" },
@@ -43,5 +48,8 @@
     { "name": "club_slug", "type": "string" },
     { "name": "club_avatar", "type": "string" },
     { "name": "club_background", "type": "string" }
-  ]
+  ],
+  "default_sorting_field": "createdAt",
+  "token_separators": ["-", "_", " "],
+  "enable_nested_fields": true
 }

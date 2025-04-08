@@ -119,8 +119,8 @@ describe("transformRange", () => {
 
     const result = transformRange(query, ctx);
 
-    expect(result.query.filter_by).toContain('mapped_field:>="2022-01-01"');
-    expect(result.query.filter_by).toContain('mapped_field:<="2022-12-31"');
+    expect(result.query.filter_by).toContain("mapped_field:>=2022-01-01");
+    expect(result.query.filter_by).toContain("mapped_field:<=2022-12-31");
     expect(result.warnings).toEqual([]);
   });
 });

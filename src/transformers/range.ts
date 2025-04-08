@@ -5,7 +5,7 @@ import {
 } from "../core/types";
 import { resolveReservedKeyword } from "../utils/handle-reserved-keywords";
 import { resolveMappedField } from "../utils/resolve-mapped-field";
-import { quoteValue } from "../utils/quote-value";
+import { formatTypesenseFilterValue } from "../utils/quote-value";
 import { coerceValueFromSchema } from "../utils/coerce-value-from-schema";
 
 export const transformRange = (
@@ -38,16 +38,16 @@ export const transformRange = (
         let clause: string | null = null;
         switch (op) {
           case "gte":
-            clause = `${mapped}:>=${quoteValue(resolvedValue)}`;
+            clause = `${mapped}:>=${formatTypesenseFilterValue(resolvedValue)}`;
             break;
           case "lte":
-            clause = `${mapped}:<=${quoteValue(resolvedValue)}`;
+            clause = `${mapped}:<=${formatTypesenseFilterValue(resolvedValue)}`;
             break;
           case "gt":
-            clause = `${mapped}:>${quoteValue(resolvedValue)}`;
+            clause = `${mapped}:>${formatTypesenseFilterValue(resolvedValue)}`;
             break;
           case "lt":
-            clause = `${mapped}:<${quoteValue(resolvedValue)}`;
+            clause = `${mapped}:<${formatTypesenseFilterValue(resolvedValue)}`;
             break;
           default:
             warnings.push(
