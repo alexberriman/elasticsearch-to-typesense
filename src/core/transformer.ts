@@ -28,27 +28,27 @@ export const transformQueryRecursively = (
   esQuery: ElasticsearchQuery,
   ctx: TransformerContext
 ): TransformResult<TypesenseQuery> => {
-  const results: string[] = [];
+  const results = new Set<string>();
   const warnings: string[] = [];
 
   for (const key in esQuery) {
     const transformer = transformers[key];
     if (transformer) {
       const result = transformer((esQuery as any)[key], ctx);
-      if (result.query.filter_by) results.push(result.query.filter_by);
+      if (result.query.filter_by) results.add(result.query.filter_by);
       warnings.push(...result.warnings);
     } else {
       warnings.push(`Unsupported clause: "${key}"`);
     }
   }
 
-  const raw = results.filter(Boolean).join(" && ");
-  const normalized = normalizeParentheses(raw);
+  const filter_by =
+    normalizeParentheses([...results].join(" && ")) || undefined;
 
   return {
     query: {
       q: "*",
-      filter_by: normalized || undefined,
+      filter_by,
     },
     warnings,
   };

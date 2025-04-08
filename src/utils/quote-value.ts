@@ -1,6 +1,7 @@
-export const quoteValue = (value: unknown): string => {
+export const quoteValue = (value: any): string => {
   if (typeof value === "string") {
+    // Escape quotes and wrap in double quotes
     return `"${value.replace(/"/g, '\\"')}"`;
   }
-  return String(value);
+  return `${value}`;
 };

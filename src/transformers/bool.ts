@@ -17,16 +17,18 @@ export const transformBool = (
     const queries = bool[key];
     if (!Array.isArray(queries)) return;
 
-    const subFilters: string[] = [];
+    const subFilterSet: Set<string> = new Set();
 
     for (const q of queries) {
       const sub = transformQueryRecursively(q, ctx);
-      if (sub.query.filter_by) subFilters.push(`(${sub.query.filter_by})`);
+      if (sub.query.filter_by) subFilterSet.add(`(${sub.query.filter_by})`);
       warnings.push(...sub.warnings);
     }
 
-    if (subFilters.length > 0) {
-      const joined = subFilters.join(key === "should" ? " || " : " && ");
+    if (subFilterSet.size > 0) {
+      const joined = [...subFilterSet].join(
+        key === "should" ? " || " : key === "must_not" ? " || " : " && "
+      );
       if (key === "must_not") {
         filters.push(`!(${joined})`);
       } else {

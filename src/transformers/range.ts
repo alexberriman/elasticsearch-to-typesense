@@ -13,7 +13,7 @@ export const transformRange = (
   ctx: TransformerContext
 ): TransformResult<Partial<TypesenseQuery>> => {
   const warnings: string[] = [];
-  const parts: string[] = [];
+  const parts: Set<string> = new Set(); // avoid duplicates
 
   for (const [field, conditions] of Object.entries(range)) {
     const mapped = resolveMappedField(field, ctx);
@@ -21,8 +21,6 @@ export const transformRange = (
       warnings.push(`Skipped unmapped field "${field}"`);
       continue;
     }
-
-    const filters: string[] = [];
 
     if (typeof conditions === "object" && conditions !== null) {
       for (const [op, rawValue] of Object.entries(conditions)) {
@@ -37,34 +35,37 @@ export const transformRange = (
           ctx.typesenseSchema
         );
 
+        let clause: string | null = null;
         switch (op) {
           case "gte":
-            filters.push(`${mapped}:>=${quoteValue(resolvedValue)}`);
+            clause = `${mapped}:>=${quoteValue(resolvedValue)}`;
             break;
           case "lte":
-            filters.push(`${mapped}:<=${quoteValue(resolvedValue)}`);
+            clause = `${mapped}:<=${quoteValue(resolvedValue)}`;
             break;
           case "gt":
-            filters.push(`${mapped}:>${quoteValue(resolvedValue)}`);
+            clause = `${mapped}:>${quoteValue(resolvedValue)}`;
             break;
           case "lt":
-            filters.push(`${mapped}:<${quoteValue(resolvedValue)}`);
+            clause = `${mapped}:<${quoteValue(resolvedValue)}`;
             break;
           default:
             warnings.push(
               `Unsupported range operator "${op}" on field "${field}"`
             );
         }
+
+        if (clause) {
+          parts.add(clause); // dedup here
+        }
       }
     } else {
       warnings.push(`Range conditions must be an object for "${field}"`);
     }
-
-    parts.push(...filters);
   }
 
   return {
-    query: { filter_by: parts.join(" && ") },
+    query: { filter_by: [...parts].join(" && ") },
     warnings,
   };
 };
