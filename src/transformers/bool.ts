@@ -47,30 +47,79 @@ export const transformBool = (
 
     if (subFilterSet.size > 0) {
       if (key === "must_not") {
-        const parsed = [...subFilterSet].map((clause) =>
-          clause.match(/^\((\w+):=("[^"]+"|\w+)\)$/)
-        );
+        // Extract individual conditions to be negated
+        const clausesToNegate: string[] = [];
 
-        const allSameField =
-          parsed.length > 1 &&
-          parsed.every((m) => m !== null && m[1] === parsed[0]?.[1]);
+        for (const clause of subFilterSet) {
+          // Remove outer parentheses if present
+          const cleanClause = clause.replace(/^\((.+)\)$/, "$1");
 
-        if (allSameField) {
-          const field = parsed[0]![1];
-          const values = parsed.map((m) => m![2]);
-          filters.push(`${field}:!=[${values.join(",")}]`);
-        } else {
-          const safe = [...subFilterSet].filter(
-            (clause) => !/[<>]=?|:[^=]/.test(clause)
-          );
+          // Handle different condition formats
 
-          if (safe.length > 0) {
-            filters.push(`!(${safe.join(" || ")})`);
-          } else {
+          // Try field:= value format or field == value format
+          if (cleanClause.includes(":= ") || cleanClause.includes(" == ")) {
+            const separator = cleanClause.includes(":= ") ? ":= " : " == ";
+            const [field, value] = cleanClause.split(separator, 2);
+            // Same field negation pattern - we'll collect these for array-based negation
+            const fieldName = field.trim();
+            const valueStr = value.trim();
+
+            // Add to list of clauses to negate
+            clausesToNegate.push(`${fieldName}:!= ${valueStr}`);
+            continue;
+          }
+
+          // Try field IN [...] format
+          if (cleanClause.includes(" IN ")) {
+            const [field, valueArray] = cleanClause.split(" IN ", 2);
+            clausesToNegate.push(`${field.trim()}:!= ${valueArray.trim()}`);
+            continue;
+          }
+
+          // Try field:> value format or field > value format
+          if (cleanClause.includes(":> ") || cleanClause.includes(" > ")) {
+            // For range queries in must_not, we need to add a specific warning
             warnings.push(
               "Skipped must_not clause with unsupported negated range filter"
             );
+            return; // Exit from the loop since we can't handle these range filters correctly
           }
+
+          // Try field:< value format or field < value format
+          if (cleanClause.includes(":< ") || cleanClause.includes(" < ")) {
+            const separator = cleanClause.includes(":< ") ? ":< " : " < ";
+            const [field, value] = cleanClause.split(separator, 2);
+            clausesToNegate.push(`${field.trim()}:>= ${value.trim()}`);
+            continue;
+          }
+
+          // Try field:>= value format or field >= value format
+          if (cleanClause.includes(":>= ") || cleanClause.includes(" >= ")) {
+            const separator = cleanClause.includes(":>= ") ? ":>= " : " >= ";
+            const [field, value] = cleanClause.split(separator, 2);
+            clausesToNegate.push(`${field.trim()}:< ${value.trim()}`);
+            continue;
+          }
+
+          // Try field:<= value format or field <= value format
+          if (cleanClause.includes(":<= ") || cleanClause.includes(" <= ")) {
+            const separator = cleanClause.includes(":<= ") ? ":<= " : " <= ";
+            const [field, value] = cleanClause.split(separator, 2);
+            clausesToNegate.push(`${field.trim()}:> ${value.trim()}`);
+            continue;
+          }
+
+          // For other formats, add a warning
+          warnings.push(`Unsupported negation format: ${clause}`);
+        }
+
+        if (clausesToNegate.length > 0) {
+          // Join all negated clauses with AND and wrap them in parentheses
+          filters.push(`(${clausesToNegate.join(" && ")})`);
+        } else {
+          warnings.push(
+            "Could not parse must_not clauses into valid Typesense filter expressions"
+          );
         }
       } else {
         const joined = [...subFilterSet].join(

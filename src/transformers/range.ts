@@ -36,18 +36,19 @@ export const transformRange = (
         );
 
         let clause: string | null = null;
+        const formattedValue = formatTypesenseFilterValue(resolvedValue);
         switch (op) {
           case "gte":
-            clause = `${mapped}:>=${formatTypesenseFilterValue(resolvedValue)}`;
+            clause = `${mapped}:>= ${formattedValue}`;
             break;
           case "lte":
-            clause = `${mapped}:<=${formatTypesenseFilterValue(resolvedValue)}`;
+            clause = `${mapped}:<= ${formattedValue}`;
             break;
           case "gt":
-            clause = `${mapped}:>${formatTypesenseFilterValue(resolvedValue)}`;
+            clause = `${mapped}:> ${formattedValue}`;
             break;
           case "lt":
-            clause = `${mapped}:<${formatTypesenseFilterValue(resolvedValue)}`;
+            clause = `${mapped}:< ${formattedValue}`;
             break;
           default:
             warnings.push(

@@ -20,7 +20,7 @@ describe("transformTerm", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:=exact_value",
+        filter_by: 'mapped_field:= "exact_value"',
       },
       warnings: [],
     });
@@ -34,7 +34,7 @@ describe("transformTerm", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:=42",
+        filter_by: "mapped_field:= 42",
       },
       warnings: [],
     });
@@ -48,7 +48,7 @@ describe("transformTerm", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:=true",
+        filter_by: "mapped_field:= true",
       },
       warnings: [],
     });
@@ -67,7 +67,7 @@ describe("transformTerm", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:=exact_value",
+        filter_by: 'mapped_field:= "exact_value"',
       },
       warnings: [],
     });
@@ -105,9 +105,9 @@ describe("transformTerm", () => {
 
     const result = transformTerm(query, ctx);
 
-    expect(result.query.filter_by).toContain("mapped_field1:=value1");
-    expect(result.query.filter_by).toContain("mapped_field2:=42");
-    expect(result.query.filter_by).toContain("mapped_field3:=true");
+    expect(result.query.filter_by).toContain('mapped_field1:= "value1"');
+    expect(result.query.filter_by).toContain("mapped_field2:= 42");
+    expect(result.query.filter_by).toContain("mapped_field3:= true");
     expect(result.query.filter_by).toContain("&&");
     expect(result.warnings).toEqual([]);
   });

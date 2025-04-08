@@ -4,6 +4,7 @@ import {
   TypesenseQuery,
 } from "../core/types";
 import { resolveMappedField } from "../utils/resolve-mapped-field";
+import { formatTypesenseFilterValue } from "../utils/quote-value";
 
 // Type should be correctly defined as Record<string, Array<string|number|boolean>>
 // to match the actual usage in tests
@@ -22,8 +23,19 @@ export const transformTerms = (
     }
 
     if (Array.isArray(values)) {
-      const cleaned = values.map(String).join(",");
-      parts.push(`${mapped}:=[${cleaned}]`);
+      if (values.length === 0) {
+        // Still create an empty filter but add a warning
+        parts.push(`${mapped}:= []`);
+        warnings.push(`Empty array for field "${field}" in terms clause`);
+        continue;
+      }
+
+      // Use the formatTypesenseFilterValue utility directly on the array
+      // This will properly format each element according to its type
+      const formattedValues = formatTypesenseFilterValue(values);
+
+      // Proper Typesense format for IN operator
+      parts.push(`${mapped}:= ${formattedValues}`);
     } else {
       warnings.push(`Terms clause for "${field}" must be an array`);
     }

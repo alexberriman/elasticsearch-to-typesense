@@ -60,7 +60,7 @@ export const transformTerm = (
 
     // Format the value properly for Typesense filter syntax
     const formattedValue = formatTypesenseFilterValue(value);
-    parts.push(`${mapped}:=${formattedValue}`);
+    parts.push(`${mapped}:= ${formattedValue}`);
   }
 
   return {

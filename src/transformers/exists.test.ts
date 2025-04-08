@@ -28,7 +28,7 @@ describe("transformExists", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:!=null",
+        filter_by: "mapped_field:!= null",
       },
       warnings: [],
     });
@@ -46,7 +46,7 @@ describe("transformExists", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:>0",
+        filter_by: "mapped_field:!= null",
       },
       warnings: [],
     });
@@ -63,7 +63,7 @@ describe("transformExists", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:>0",
+        filter_by: "mapped_field:!= null",
       },
       warnings: [],
     });
@@ -80,7 +80,7 @@ describe("transformExists", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:>0",
+        filter_by: "mapped_field:!= null",
       },
       warnings: [],
     });
@@ -94,7 +94,7 @@ describe("transformExists", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:!=null",
+        filter_by: "mapped_field:!= null",
       },
       warnings: [],
     });
@@ -111,7 +111,7 @@ describe("transformExists", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: "mapped_field:!=null",
+        filter_by: "mapped_field:!= null",
       },
       warnings: [],
     });
