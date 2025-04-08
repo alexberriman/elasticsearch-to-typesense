@@ -10,8 +10,8 @@ describe("applyAutoMapping", () => {
         name: { type: "text" },
         age: { type: "integer" },
         activity_date: { type: "date" },
-        activity_location: { type: "geo_point" }
-      }
+        activity_location: { type: "geo_point" },
+      },
     };
 
     const typesenseSchema: TypesenseSchema = {
@@ -20,15 +20,15 @@ describe("applyAutoMapping", () => {
         { name: "name", type: "string" },
         { name: "age", type: "int32" },
         { name: "date", type: "int64" },
-        { name: "location", type: "geopoint" }
-      ]
+        { name: "location", type: "geopoint" },
+      ],
     };
 
     const mapping = applyAutoMapping(elasticSchema, typesenseSchema);
 
     expect(mapping).toEqual({
       activity_date: "date",
-      activity_location: "location"
+      activity_location: "location",
     });
   });
 
@@ -47,22 +47,22 @@ describe("applyAutoMapping", () => {
         id: { type: "keyword" },
         title: { type: "text" },
         description: { type: "text" },
-        activity_status: { type: "keyword" }
-      }
+        activity_status: { type: "keyword" },
+      },
     };
 
     const typesenseSchema: TypesenseSchema = {
       fields: [
         { name: "id", type: "string" },
         { name: "status", type: "string" },
-        { name: "other_field", type: "string" }
-      ]
+        { name: "other_field", type: "string" },
+      ],
     };
 
     const mapping = applyAutoMapping(elasticSchema, typesenseSchema);
 
     expect(mapping).toEqual({
-      activity_status: "status"
+      activity_status: "status",
     });
     expect(mapping.title).toBeUndefined();
     expect(mapping.description).toBeUndefined();
@@ -74,23 +74,23 @@ describe("applyAutoMapping", () => {
         activity_name: { type: "text" },
         activity_price: { type: "float" },
         activity_category: { type: "keyword" },
-        regular_field: { type: "keyword" }
-      }
+        regular_field: { type: "keyword" },
+      },
     };
 
     const typesenseSchema: TypesenseSchema = {
       fields: [
         { name: "name", type: "string" },
         { name: "price", type: "float" },
-        { name: "activity_category", type: "string" }
-      ]
+        { name: "activity_category", type: "string" },
+      ],
     };
 
     const mapping = applyAutoMapping(elasticSchema, typesenseSchema);
 
     expect(mapping).toEqual({
       activity_name: "name",
-      activity_price: "price"
+      activity_price: "price",
     });
   });
 });

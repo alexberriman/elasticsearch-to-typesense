@@ -12,7 +12,10 @@ describe("Result utility functions", () => {
       expect(ok(123)).toEqual({ ok: true, value: 123 });
       expect(ok(null)).toEqual({ ok: true, value: null });
       expect(ok(undefined)).toEqual({ ok: true, value: undefined });
-      expect(ok({ data: "test" })).toEqual({ ok: true, value: { data: "test" } });
+      expect(ok({ data: "test" })).toEqual({
+        ok: true,
+        value: { data: "test" },
+      });
     });
   });
 

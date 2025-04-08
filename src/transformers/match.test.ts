@@ -22,20 +22,20 @@ describe("transformMatch", () => {
   });
 
   it("transforms a match query with multiple fields", () => {
-    const query = { 
+    const query = {
       field_name1: "value1",
-      field_name2: "value2" 
+      field_name2: "value2",
     };
     const ctx = createContext({
       field_name1: "mapped_field1",
-      field_name2: "mapped_field2"
+      field_name2: "mapped_field2",
     });
 
     const result = transformMatch(query, ctx);
 
     expect(result.query.filter_by).toContain('mapped_field1:="value1"');
     expect(result.query.filter_by).toContain('mapped_field2:="value2"');
-    expect(result.query.filter_by).toContain('&&');
+    expect(result.query.filter_by).toContain("&&");
     expect(result.warnings).toEqual([]);
   });
 
@@ -47,7 +47,7 @@ describe("transformMatch", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: 'mapped_field:=123',
+        filter_by: "mapped_field:=123",
       },
       warnings: [],
     });
@@ -61,7 +61,7 @@ describe("transformMatch", () => {
 
     expect(result).toEqual({
       query: {
-        filter_by: 'mapped_field:=true',
+        filter_by: "mapped_field:=true",
       },
       warnings: [],
     });
@@ -82,9 +82,9 @@ describe("transformMatch", () => {
   });
 
   it("handles mixed mapped and unmapped fields", () => {
-    const query = { 
+    const query = {
       known_field: "value1",
-      unknown_field: "value2" 
+      unknown_field: "value2",
     };
     const ctx = createContext({ known_field: "mapped_field" });
 

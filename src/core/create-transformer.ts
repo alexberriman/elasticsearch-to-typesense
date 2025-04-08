@@ -14,7 +14,7 @@ export const createTransformer = (opts: TransformerOptions) => {
   const propertyMapping =
     opts.autoMapProperties && opts.elasticSchema && opts.typesenseSchema
       ? applyAutoMapping(opts.elasticSchema, opts.typesenseSchema)
-      : opts.propertyMapping ?? {};
+      : (opts.propertyMapping ?? {});
 
   const ctx: TransformerContext = {
     propertyMapping,

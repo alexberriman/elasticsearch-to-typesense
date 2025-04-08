@@ -18,7 +18,7 @@ describe("createPaginationAndSort", () => {
       from: 20,
       size: 10,
     };
-    
+
     const result = createPaginationAndSort(input, createContext());
 
     expect(result.query).toEqual({
@@ -32,7 +32,7 @@ describe("createPaginationAndSort", () => {
     const input = {
       size: 15,
     };
-    
+
     const result = createPaginationAndSort(input, createContext());
 
     expect(result.query).toEqual({
@@ -43,16 +43,18 @@ describe("createPaginationAndSort", () => {
 
   it("transforms simple sort fields", () => {
     vi.spyOn(resolveFieldModule, "resolveMappedField").mockImplementation(
-      (field) => field === "field1" ? "mapped_field1" : field === "field2" ? "mapped_field2" : null
+      (field) =>
+        field === "field1"
+          ? "mapped_field1"
+          : field === "field2"
+            ? "mapped_field2"
+            : null
     );
 
     const input = {
-      sort: [
-        { field1: { order: "asc" } },
-        { field2: { order: "desc" } },
-      ],
+      sort: [{ field1: { order: "asc" } }, { field2: { order: "desc" } }],
     };
-    
+
     const result = createPaginationAndSort(input, createContext());
 
     expect(result.query).toEqual({
@@ -63,11 +65,9 @@ describe("createPaginationAndSort", () => {
 
   it("transforms _score field with default value", () => {
     const input = {
-      sort: [
-        { _score: { order: "desc" } },
-      ],
+      sort: [{ _score: { order: "desc" } }],
     };
-    
+
     const result = createPaginationAndSort(input, createContext());
 
     expect(result.query).toEqual({
@@ -78,13 +78,11 @@ describe("createPaginationAndSort", () => {
 
   it("transforms _score field with custom default", () => {
     const input = {
-      sort: [
-        { _score: { order: "desc" } },
-      ],
+      sort: [{ _score: { order: "desc" } }],
     };
-    
+
     const result = createPaginationAndSort(
-      input, 
+      input,
       createContext({}, "quality_score:desc")
     );
 
@@ -99,20 +97,22 @@ describe("createPaginationAndSort", () => {
       sort: "location(10,20):asc",
       warnings: [],
     };
-    
-    vi.spyOn(geoSortModule, "transformGeoSort").mockReturnValue(mockGeoSortResult);
+
+    vi.spyOn(geoSortModule, "transformGeoSort").mockReturnValue(
+      mockGeoSortResult
+    );
 
     const input = {
       sort: [
-        { 
-          _geo_distance: { 
+        {
+          _geo_distance: {
             location: { lat: 10, lon: 20 },
             order: "asc",
-          }
+          },
         },
       ],
     };
-    
+
     const result = createPaginationAndSort(input, createContext());
 
     expect(result.query).toEqual({
@@ -129,26 +129,30 @@ describe("createPaginationAndSort", () => {
     vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(null);
 
     const input = {
-      sort: [
-        { unknown_field: { order: "asc" } },
-      ],
+      sort: [{ unknown_field: { order: "asc" } }],
     };
-    
+
     const result = createPaginationAndSort(input, createContext());
 
     expect(result.query).toEqual({});
-    expect(result.warnings).toEqual(['Skipped unmapped sort field "unknown_field"']);
+    expect(result.warnings).toEqual([
+      'Skipped unmapped sort field "unknown_field"',
+    ]);
   });
 
   it("combines different sorts and pagination", () => {
-    vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue("mapped_field");
-    
+    vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(
+      "mapped_field"
+    );
+
     const mockGeoSortResult = {
       sort: "location(10,20):asc",
       warnings: [],
     };
-    
-    vi.spyOn(geoSortModule, "transformGeoSort").mockReturnValue(mockGeoSortResult);
+
+    vi.spyOn(geoSortModule, "transformGeoSort").mockReturnValue(
+      mockGeoSortResult
+    );
 
     const input = {
       from: 30,
@@ -158,7 +162,7 @@ describe("createPaginationAndSort", () => {
         { _geo_distance: { location: { lat: 10, lon: 20 }, order: "asc" } },
       ],
     };
-    
+
     const result = createPaginationAndSort(input, createContext());
 
     expect(result.query).toEqual({
@@ -174,15 +178,17 @@ describe("createPaginationAndSort", () => {
       sort: "location(10,20):asc",
       warnings: ["Geo warning"],
     };
-    
-    vi.spyOn(geoSortModule, "transformGeoSort").mockReturnValue(mockGeoSortResult);
+
+    vi.spyOn(geoSortModule, "transformGeoSort").mockReturnValue(
+      mockGeoSortResult
+    );
 
     const input = {
       sort: [
         { _geo_distance: { location: { lat: 10, lon: 20 }, order: "asc" } },
       ],
     };
-    
+
     const result = createPaginationAndSort(input, createContext());
 
     expect(result.query).toEqual({

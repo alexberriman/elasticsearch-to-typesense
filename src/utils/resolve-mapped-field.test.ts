@@ -6,16 +6,16 @@ describe("resolveMappedField", () => {
   const mockSchema: TypesenseSchema = {
     fields: [
       { name: "mapped_field", type: "string" },
-      { name: "original_field", type: "string" }
-    ]
+      { name: "original_field", type: "string" },
+    ],
   };
 
   it("should return mapped field when mapping exists", () => {
     const ctx: TransformerContext = {
       propertyMapping: {
-        "original_field": "mapped_field"
+        original_field: "mapped_field",
       },
-      typesenseSchema: mockSchema
+      typesenseSchema: mockSchema,
     };
 
     expect(resolveMappedField("original_field", ctx)).toBe("mapped_field");
@@ -24,7 +24,7 @@ describe("resolveMappedField", () => {
   it("should return original field when no mapping exists", () => {
     const ctx: TransformerContext = {
       propertyMapping: {},
-      typesenseSchema: mockSchema
+      typesenseSchema: mockSchema,
     };
 
     expect(resolveMappedField("original_field", ctx)).toBe("original_field");
@@ -33,9 +33,9 @@ describe("resolveMappedField", () => {
   it("should return undefined when mapped field is not in schema", () => {
     const ctx: TransformerContext = {
       propertyMapping: {
-        "original_field": "nonexistent_field"
+        original_field: "nonexistent_field",
       },
-      typesenseSchema: mockSchema
+      typesenseSchema: mockSchema,
     };
 
     expect(resolveMappedField("original_field", ctx)).toBeUndefined();
@@ -44,8 +44,8 @@ describe("resolveMappedField", () => {
   it("should return field when typesenseSchema is not provided", () => {
     const ctx: TransformerContext = {
       propertyMapping: {
-        "original_field": "mapped_field"
-      }
+        original_field: "mapped_field",
+      },
     };
 
     expect(resolveMappedField("original_field", ctx)).toBe("mapped_field");
@@ -55,7 +55,7 @@ describe("resolveMappedField", () => {
   it("should handle nullish field values", () => {
     const ctx: TransformerContext = {
       propertyMapping: {},
-      typesenseSchema: mockSchema
+      typesenseSchema: mockSchema,
     };
 
     expect(resolveMappedField("", ctx)).toBe("");

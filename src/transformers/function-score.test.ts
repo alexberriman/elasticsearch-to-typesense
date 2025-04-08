@@ -5,7 +5,7 @@ import * as transformer from "../core/transformer";
 
 // Mock the transformQueryRecursively function
 vi.mock("../core/transformer", () => ({
-  transformQueryRecursively: vi.fn()
+  transformQueryRecursively: vi.fn(),
 }));
 
 describe("transformFunctionScore", () => {
@@ -18,18 +18,19 @@ describe("transformFunctionScore", () => {
   });
 
   it("transforms function_score query with a base query", () => {
-    const mockBaseResult = { 
-      query: { filter_by: "field:=value" }, 
-      warnings: [] 
+    const mockBaseResult = {
+      query: { filter_by: "field:=value" },
+      warnings: [],
     };
-    
-    vi.spyOn(transformer, "transformQueryRecursively")
-      .mockReturnValueOnce(mockBaseResult);
+
+    vi.spyOn(transformer, "transformQueryRecursively").mockReturnValueOnce(
+      mockBaseResult
+    );
 
     const query = {
       query: { term: { field: "value" } },
     };
-    
+
     const result = transformFunctionScore(query, createContext());
 
     expect(result.query.filter_by).toBe("(field:=value)");
@@ -42,35 +43,34 @@ describe("transformFunctionScore", () => {
   });
 
   it("adds warning when functions are provided", () => {
-    const mockBaseResult = { 
-      query: { filter_by: "field:=value" }, 
-      warnings: [] 
+    const mockBaseResult = {
+      query: { filter_by: "field:=value" },
+      warnings: [],
     };
-    
-    vi.spyOn(transformer, "transformQueryRecursively")
-      .mockReturnValueOnce(mockBaseResult);
+
+    vi.spyOn(transformer, "transformQueryRecursively").mockReturnValueOnce(
+      mockBaseResult
+    );
 
     const query = {
       query: { term: { field: "value" } },
-      functions: [
-        { field_value_factor: { field: "score", factor: 1.2 } },
-      ],
+      functions: [{ field_value_factor: { field: "score", factor: 1.2 } }],
     };
-    
+
     const result = transformFunctionScore(query, createContext());
 
     expect(result.query.filter_by).toBe("(field:=value)");
-    expect(result.warnings).toContain("function_score.functions are not supported in Typesense");
+    expect(result.warnings).toContain(
+      "function_score.functions are not supported in Typesense"
+    );
     expect(transformer.transformQueryRecursively).toHaveBeenCalledTimes(1);
   });
 
   it("returns warning when query is missing", () => {
     const query = {
-      functions: [
-        { field_value_factor: { field: "score", factor: 1.2 } },
-      ],
+      functions: [{ field_value_factor: { field: "score", factor: 1.2 } }],
     };
-    
+
     const result = transformFunctionScore(query, createContext());
 
     expect(result.query).toEqual({});
@@ -79,18 +79,19 @@ describe("transformFunctionScore", () => {
   });
 
   it("propagates warnings from base query", () => {
-    const mockBaseResult = { 
-      query: { filter_by: "field:=value" }, 
-      warnings: ["Warning from base query"] 
+    const mockBaseResult = {
+      query: { filter_by: "field:=value" },
+      warnings: ["Warning from base query"],
     };
-    
-    vi.spyOn(transformer, "transformQueryRecursively")
-      .mockReturnValueOnce(mockBaseResult);
+
+    vi.spyOn(transformer, "transformQueryRecursively").mockReturnValueOnce(
+      mockBaseResult
+    );
 
     const query = {
       query: { term: { field: "value" } },
     };
-    
+
     const result = transformFunctionScore(query, createContext());
 
     expect(result.query.filter_by).toBe("(field:=value)");
@@ -99,18 +100,19 @@ describe("transformFunctionScore", () => {
   });
 
   it("handles empty filter_by from base query", () => {
-    const mockBaseResult = { 
-      query: { filter_by: "" }, 
-      warnings: [] 
+    const mockBaseResult = {
+      query: { filter_by: "" },
+      warnings: [],
     };
-    
-    vi.spyOn(transformer, "transformQueryRecursively")
-      .mockReturnValueOnce(mockBaseResult);
+
+    vi.spyOn(transformer, "transformQueryRecursively").mockReturnValueOnce(
+      mockBaseResult
+    );
 
     const query = {
       query: { term: { field: "value" } },
     };
-    
+
     const result = transformFunctionScore(query, createContext());
 
     expect(result.query.filter_by).toBe(undefined);

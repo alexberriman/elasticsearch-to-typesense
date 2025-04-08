@@ -1,33 +1,44 @@
 import { describe, expect, it, vi } from "vitest";
 import { applyTransformers } from "./apply-transformers";
-import { ElasticsearchQuery, TransformerContext, TypesenseQuery, TransformResult } from "../core/types";
+import {
+  ElasticsearchQuery,
+  TransformerContext,
+  TypesenseQuery,
+  TransformResult,
+} from "../core/types";
 
 describe("applyTransformers", () => {
   const mockContext: TransformerContext = {
-    propertyMapping: {}
+    propertyMapping: {},
   };
 
   it("should apply transformers for each recognized clause", () => {
     const mockTransformers = {
       match: vi.fn().mockReturnValue({
         query: { filter_by: "field1:=value1" },
-        warnings: []
+        warnings: [],
       }),
       term: vi.fn().mockReturnValue({
         query: { filter_by: "field2:=value2" },
-        warnings: []
-      })
+        warnings: [],
+      }),
     };
 
     const esQuery: ElasticsearchQuery = {
       match: { field1: "value1" },
-      term: { field2: "value2" }
+      term: { field2: "value2" },
     };
 
     const result = applyTransformers(esQuery, mockContext, mockTransformers);
 
-    expect(mockTransformers.match).toHaveBeenCalledWith({ field1: "value1" }, mockContext);
-    expect(mockTransformers.term).toHaveBeenCalledWith({ field2: "value2" }, mockContext);
+    expect(mockTransformers.match).toHaveBeenCalledWith(
+      { field1: "value1" },
+      mockContext
+    );
+    expect(mockTransformers.term).toHaveBeenCalledWith(
+      { field2: "value2" },
+      mockContext
+    );
     expect(result.query.filter_by).toBe("field1:=value1 && field2:=value2");
     expect(result.warnings).toEqual([]);
   });
@@ -36,36 +47,36 @@ describe("applyTransformers", () => {
     const mockTransformers = {
       match: vi.fn().mockReturnValue({
         query: { filter_by: "field1:=value1" },
-        warnings: []
-      })
+        warnings: [],
+      }),
     };
 
     const esQuery: ElasticsearchQuery = {
       match: { field1: "value1" },
-      unsupported: { field2: "value2" }
+      unsupported: { field2: "value2" },
     };
 
     const result = applyTransformers(esQuery, mockContext, mockTransformers);
 
     expect(result.query.filter_by).toBe("field1:=value1");
-    expect(result.warnings).toEqual(["Unsupported clause: \"unsupported\""]);
+    expect(result.warnings).toEqual(['Unsupported clause: "unsupported"']);
   });
 
   it("should collect warnings from transformers", () => {
     const mockTransformers = {
       match: vi.fn().mockReturnValue({
         query: { filter_by: "field1:=value1" },
-        warnings: ["Warning 1", "Warning 2"]
+        warnings: ["Warning 1", "Warning 2"],
       }),
       term: vi.fn().mockReturnValue({
         query: { filter_by: "field2:=value2" },
-        warnings: ["Warning 3"]
-      })
+        warnings: ["Warning 3"],
+      }),
     };
 
     const esQuery: ElasticsearchQuery = {
       match: { field1: "value1" },
-      term: { field2: "value2" }
+      term: { field2: "value2" },
     };
 
     const result = applyTransformers(esQuery, mockContext, mockTransformers);
@@ -78,17 +89,17 @@ describe("applyTransformers", () => {
     const mockTransformers = {
       match: vi.fn().mockReturnValue({
         query: {},
-        warnings: []
+        warnings: [],
       }),
       term: vi.fn().mockReturnValue({
         query: { filter_by: "" },
-        warnings: []
-      })
+        warnings: [],
+      }),
     };
 
     const esQuery: ElasticsearchQuery = {
       match: { field1: "value1" },
-      term: { field2: "value2" }
+      term: { field2: "value2" },
     };
 
     const result = applyTransformers(esQuery, mockContext, mockTransformers);
@@ -99,7 +110,7 @@ describe("applyTransformers", () => {
   it("should handle empty query", () => {
     const mockTransformers = {
       match: vi.fn(),
-      term: vi.fn()
+      term: vi.fn(),
     };
 
     const esQuery: ElasticsearchQuery = {};

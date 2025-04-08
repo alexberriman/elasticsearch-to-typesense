@@ -57,7 +57,7 @@ describe("transformTerm", () => {
 
     expect(result).toEqual({
       query: {},
-      warnings: ["Could not resolve field \"unknown_field\" in term clause"],
+      warnings: ['Could not resolve field "unknown_field" in term clause'],
     });
   });
 });

@@ -24,9 +24,10 @@ describe("transformRange", () => {
     };
     const ctx = createContext({ field_name: "mapped_field" });
 
-    vi.spyOn(handleReservedKeywords, "resolveReservedKeyword").mockImplementation(
-      (_field, value) => value
-    );
+    vi.spyOn(
+      handleReservedKeywords,
+      "resolveReservedKeyword"
+    ).mockImplementation((_field, value) => value);
     vi.spyOn(coerceValueModule, "coerceValueFromSchema").mockImplementation(
       (_field, value) => value
     );
@@ -51,7 +52,9 @@ describe("transformRange", () => {
     const result = transformRange(query, ctx);
 
     expect(result.query.filter_by).toBe("");
-    expect(result.warnings).toEqual(['Skipped unmapped field "unmapped_field"']);
+    expect(result.warnings).toEqual([
+      'Skipped unmapped field "unmapped_field"',
+    ]);
   });
 
   it("should add warning for unsupported range operators", () => {
@@ -62,9 +65,10 @@ describe("transformRange", () => {
     };
     const ctx = createContext({ field_name: "mapped_field" });
 
-    vi.spyOn(handleReservedKeywords, "resolveReservedKeyword").mockImplementation(
-      (_field, value) => value
-    );
+    vi.spyOn(
+      handleReservedKeywords,
+      "resolveReservedKeyword"
+    ).mockImplementation((_field, value) => value);
     vi.spyOn(coerceValueModule, "coerceValueFromSchema").mockImplementation(
       (_field, value) => value
     );
@@ -100,9 +104,10 @@ describe("transformRange", () => {
     };
     const ctx = createContext({ field_name: "mapped_field" });
 
-    vi.spyOn(handleReservedKeywords, "resolveReservedKeyword").mockImplementation(
-      (_field, value) => value
-    );
+    vi.spyOn(
+      handleReservedKeywords,
+      "resolveReservedKeyword"
+    ).mockImplementation((_field, value) => value);
     vi.spyOn(coerceValueModule, "coerceValueFromSchema").mockImplementation(
       (_field, value) => value
     );

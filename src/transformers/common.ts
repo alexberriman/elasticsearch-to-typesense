@@ -25,7 +25,10 @@ export const createPaginationAndSort = (
         const options = rawOptions as { order: "asc" | "desc" };
 
         if (field === "_geo_distance") {
-          const geoSortResult = transformGeoSort(rawOptions as Record<string, any>, ctx);
+          const geoSortResult = transformGeoSort(
+            rawOptions as Record<string, any>,
+            ctx
+          );
           warnings.push(...geoSortResult.warnings);
           return geoSortResult.sort || null;
         }
