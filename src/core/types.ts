@@ -12,6 +12,7 @@ export interface TransformerContext {
   typesenseSchema?: TypesenseSchema;
   elasticSchema?: ElasticSchema;
   negated?: boolean;
+  defaultScoreField?: string;
 }
 
 export type ElasticsearchQuery = Record<string, unknown>;
@@ -43,4 +44,10 @@ export interface TransformerOptions {
     typesenseField: string
   ) => boolean;
   defaultQueryString?: string;
+  /**
+   * Default sort to use when _score is requested in Elasticsearch.
+   * By default, will use "_text_match:desc" in Typesense.
+   * For example, you could set this to "quality_score:desc" or another field.
+   */
+  defaultScoreField?: string;
 }

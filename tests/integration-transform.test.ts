@@ -14,6 +14,7 @@ describe("integration", () => {
       autoMapProperties: false,
       typesenseSchema,
       elasticSchema,
+      defaultScoreField: "quality_score:desc",
       propertyMapping: {
         activity_date_to: "to_date_time",
         activity_date_from: "from_date_time",

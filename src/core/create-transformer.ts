@@ -20,6 +20,7 @@ export const createTransformer = (opts: TransformerOptions) => {
     propertyMapping,
     typesenseSchema: opts.typesenseSchema,
     elasticSchema: opts.elasticSchema,
+    defaultScoreField: opts.defaultScoreField,
   };
 
   const transform = (input: any): Result<TransformResult<TypesenseQuery>> => {

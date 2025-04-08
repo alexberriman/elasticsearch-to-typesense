@@ -35,7 +35,8 @@ export const createPaginationAndSort = (
         }
 
         if (field === "_score") {
-          return "_text_match:desc"; // Default for scoring
+          // Use custom default score field if provided, otherwise fallback to _text_match
+          return ctx.defaultScoreField || "_text_match:desc";
         }
 
         const mapped = resolveMappedField(field, ctx);
