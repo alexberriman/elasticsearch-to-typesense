@@ -11,7 +11,7 @@ describe("transformExists", () => {
     propertyMapping,
     typesenseSchema,
   });
-  
+
   beforeEach(() => {
     vi.restoreAllMocks();
   });
@@ -118,8 +118,10 @@ describe("transformExists", () => {
   it("returns warning when field cannot be resolved", () => {
     const query = { field: "unknown_field" };
     const ctx = createContext();
-    
-    vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(undefined);
+
+    vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(
+      undefined
+    );
 
     const result = transformExists(query, ctx);
 

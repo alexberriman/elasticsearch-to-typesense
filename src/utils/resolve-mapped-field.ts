@@ -5,14 +5,14 @@ export const resolveMappedField = (
   ctx: TransformerContext
 ): string | undefined => {
   if (field === null || field === undefined) {
-    return '';
+    return "";
   }
-  
+
   // Empty string case
-  if (field === '') {
-    return '';
+  if (field === "") {
+    return "";
   }
-  
+
   const mapped = ctx.propertyMapping[field] ?? field;
 
   const valid =

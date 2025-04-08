@@ -49,8 +49,10 @@ describe("transformRange", () => {
       },
     };
     const ctx = createContext({});
-    
-    vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(undefined);
+
+    vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(
+      undefined
+    );
 
     const result = transformRange(query, ctx);
 

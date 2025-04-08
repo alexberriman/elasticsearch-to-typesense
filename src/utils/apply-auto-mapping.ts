@@ -8,9 +8,9 @@ export const applyAutoMapping = (
 
   // Only map activity_ prefixed fields to their typesense counterparts
   Object.keys(elastic.properties).forEach((elasticField) => {
-    if (elasticField.startsWith('activity_')) {
+    if (elasticField.startsWith("activity_")) {
       const cleanFieldName = elasticField.replace(/^activity_/, "");
-      
+
       for (const tsField of typesense.fields) {
         if (tsField.name === cleanFieldName) {
           mapping[elasticField] = tsField.name;

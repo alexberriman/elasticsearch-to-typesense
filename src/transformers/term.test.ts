@@ -7,7 +7,7 @@ describe("transformTerm", () => {
   const createContext = (propertyMapping = {}): TransformerContext => ({
     propertyMapping,
   });
-  
+
   beforeEach(() => {
     vi.restoreAllMocks();
   });
@@ -57,8 +57,10 @@ describe("transformTerm", () => {
   it("returns warning when field cannot be resolved", () => {
     const query = { unknown_field: "value" };
     const ctx = createContext();
-    
-    vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(undefined);
+
+    vi.spyOn(resolveFieldModule, "resolveMappedField").mockReturnValue(
+      undefined
+    );
 
     const result = transformTerm(query, ctx);
 
