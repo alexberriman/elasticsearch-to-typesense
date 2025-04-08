@@ -5,6 +5,8 @@ import {
 } from "../core/types";
 import { resolveReservedKeyword } from "../utils/handle-reserved-keywords";
 import { resolveMappedField } from "../utils/resolve-mapped-field";
+import { quoteValue } from "../utils/quote-value";
+import { coerceValueFromSchema } from "../utils/coerce-value-from-schema";
 
 export const transformRange = (
   range: Record<string, any>,
@@ -24,24 +26,29 @@ export const transformRange = (
 
     if (typeof conditions === "object" && conditions !== null) {
       for (const [op, rawValue] of Object.entries(conditions)) {
-        const resolvedValue = resolveReservedKeyword(
+        let resolvedValue = resolveReservedKeyword(
           mapped,
           rawValue,
+          ctx.typesenseSchema
+        );
+        resolvedValue = coerceValueFromSchema(
+          mapped,
+          resolvedValue,
           ctx.typesenseSchema
         );
 
         switch (op) {
           case "gte":
-            filters.push(`${mapped}:>=${resolvedValue}`);
+            filters.push(`${mapped}:>=${quoteValue(resolvedValue)}`);
             break;
           case "lte":
-            filters.push(`${mapped}:<=${resolvedValue}`);
+            filters.push(`${mapped}:<=${quoteValue(resolvedValue)}`);
             break;
           case "gt":
-            filters.push(`${mapped}:>${resolvedValue}`);
+            filters.push(`${mapped}:>${quoteValue(resolvedValue)}`);
             break;
           case "lt":
-            filters.push(`${mapped}:<${resolvedValue}`);
+            filters.push(`${mapped}:<${quoteValue(resolvedValue)}`);
             break;
           default:
             warnings.push(

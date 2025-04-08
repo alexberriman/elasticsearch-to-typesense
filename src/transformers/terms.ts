@@ -4,6 +4,8 @@ import {
   TypesenseQuery,
 } from "../core/types";
 import { resolveMappedField } from "../utils/resolve-mapped-field";
+import { quoteValue } from "../utils/quote-value";
+import { coerceValueFromSchema } from "../utils/coerce-value-from-schema";
 
 export const transformTerms = (
   terms: Record<string, string[]>,
@@ -20,7 +22,12 @@ export const transformTerms = (
     }
 
     if (Array.isArray(values)) {
-      parts.push(`${mapped}:=[${values.join(",")}]`);
+      const quoted = values
+        .map((v) =>
+          quoteValue(coerceValueFromSchema(mapped, v, ctx.typesenseSchema))
+        )
+        .join(",");
+      parts.push(`${mapped}:=[${quoted}]`);
     } else {
       warnings.push(`Terms clause for "${field}" must be an array`);
     }

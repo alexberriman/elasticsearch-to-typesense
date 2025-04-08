@@ -28,7 +28,7 @@ export const createTransformer = (opts: TransformerOptions) => {
     }
 
     const queryPart = input.query ?? {};
-    const paginationPart = createPaginationAndSort(input);
+    const paginationPart = createPaginationAndSort(input, ctx);
     const main = transformQueryRecursively(queryPart, ctx);
 
     const hints =

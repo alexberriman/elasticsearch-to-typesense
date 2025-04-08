@@ -4,6 +4,7 @@ import {
   TypesenseQuery,
 } from "../core/types";
 import { transformQueryRecursively } from "../core/transformer";
+import { normalizeParentheses } from "../utils/normalize-parentheses";
 
 export const transformBool = (
   bool: any,
@@ -29,7 +30,7 @@ export const transformBool = (
       if (key === "must_not") {
         filters.push(`!(${joined})`);
       } else {
-        filters.push(joined);
+        filters.push(`(${joined})`);
       }
     }
   };
@@ -38,8 +39,10 @@ export const transformBool = (
   handleArray("should");
   handleArray("must_not");
 
+  const filterBy = normalizeParentheses(filters.join(" && "));
+
   return {
-    query: { filter_by: filters.join(" && ") },
+    query: { filter_by: filterBy },
     warnings,
   };
 };

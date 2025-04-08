@@ -9,6 +9,7 @@ import { transformTerms } from "../transformers/terms";
 import { transformRange } from "../transformers/range";
 import { transformBool } from "../transformers/bool";
 import { transformFunctionScore } from "../transformers/function-score";
+import { normalizeParentheses } from "../utils/normalize-parentheses";
 
 type TransformerFn = (
   query: any,
@@ -41,10 +42,13 @@ export const transformQueryRecursively = (
     }
   }
 
+  const raw = results.filter(Boolean).join(" && ");
+  const normalized = normalizeParentheses(raw);
+
   return {
     query: {
       q: "*",
-      filter_by: results.filter(Boolean).join(" && ") || undefined,
+      filter_by: normalized || undefined,
     },
     warnings,
   };

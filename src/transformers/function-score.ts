@@ -26,7 +26,9 @@ export const transformFunctionScore = (
   }
 
   return {
-    query: base.query,
+    query: {
+      filter_by: base.query.filter_by ? `(${base.query.filter_by})` : undefined,
+    },
     warnings,
   };
 };

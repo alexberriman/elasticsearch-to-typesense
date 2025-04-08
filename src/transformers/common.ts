@@ -1,7 +1,16 @@
-export const createPaginationAndSort = (input: any) => {
+import { resolveMappedField } from "../utils/resolve-mapped-field";
+import { quoteValue } from "../utils/quote-value";
+import { coerceValueFromSchema } from "../utils/coerce-value-from-schema";
+import { TransformerContext } from "../core/types";
+
+export const createPaginationAndSort = (
+  input: any,
+  ctx: TransformerContext
+): { query: Record<string, any>; warnings: string[] } => {
   const warnings: string[] = [];
   const query: Record<string, any> = {};
 
+  // Pagination
   const from = input.from;
   const size = input.size;
 
@@ -10,6 +19,7 @@ export const createPaginationAndSort = (input: any) => {
     query.page = Math.floor(from / size) + 1;
   }
 
+  // Sort
   const sort = input.sort;
   if (Array.isArray(sort)) {
     const sortBy = sort
@@ -20,16 +30,26 @@ export const createPaginationAndSort = (input: any) => {
         if (field === "_geo_distance") {
           warnings.push("Typesense does not support geo sorting yet");
           return null;
-        } else if (field === "_score") {
-          return "_text_match:desc";
-        } else {
-          return `${field}:${options.order}`;
         }
+
+        if (field === "_score") {
+          return "_text_match:desc"; // Default for scoring
+        }
+
+        const mapped = resolveMappedField(field, ctx);
+        if (!mapped) {
+          warnings.push(`Skipped unmapped sort field "${field}"`);
+          return null;
+        }
+
+        return `${mapped}:${options.order}`;
       })
       .filter(Boolean)
       .join(",");
 
-    if (sortBy) query.sort_by = sortBy;
+    if (sortBy) {
+      query.sort_by = sortBy;
+    }
   }
 
   return { query, warnings };

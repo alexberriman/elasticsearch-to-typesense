@@ -4,6 +4,8 @@ import {
   TypesenseQuery,
 } from "../core/types";
 import { resolveMappedField } from "../utils/resolve-mapped-field";
+import { quoteValue } from "../utils/quote-value";
+import { coerceValueFromSchema } from "../utils/coerce-value-from-schema";
 
 export const transformMatch = (
   match: Record<string, any>,
@@ -19,8 +21,8 @@ export const transformMatch = (
       continue;
     }
 
-    const safeValue = typeof value === "string" ? `"${value}"` : value;
-    filters.push(`${mapped}:=${safeValue}`);
+    const coerced = coerceValueFromSchema(mapped, value, ctx.typesenseSchema);
+    filters.push(`${mapped}:=${quoteValue(coerced)}`);
   }
 
   return {
