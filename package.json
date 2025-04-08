@@ -1,6 +1,6 @@
 {
   "name": "elasticsearch-to-typesense",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
