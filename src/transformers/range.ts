@@ -3,6 +3,7 @@ import {
   TransformResult,
   TypesenseQuery,
 } from "../core/types";
+import { resolveReservedKeyword } from "../utils/handle-reserved-keywords";
 
 export const transformRange = (
   range: Record<string, any>,
@@ -15,9 +16,33 @@ export const transformRange = (
     const mapped = ctx.propertyMapping[field] ?? field;
     const filters: string[] = [];
 
-    if (typeof conditions === "object") {
-      if ("gte" in conditions) filters.push(`${mapped}:>=${conditions.gte}`);
-      if ("lte" in conditions) filters.push(`${mapped}:<=${conditions.lte}`);
+    if (typeof conditions === "object" && conditions !== null) {
+      for (const [op, rawValue] of Object.entries(conditions)) {
+        const resolvedValue = resolveReservedKeyword(
+          mapped,
+          rawValue,
+          ctx.typesenseSchema
+        );
+
+        switch (op) {
+          case "gte":
+            filters.push(`${mapped}:>=${resolvedValue}`);
+            break;
+          case "lte":
+            filters.push(`${mapped}:<=${resolvedValue}`);
+            break;
+          case "gt":
+            filters.push(`${mapped}:>${resolvedValue}`);
+            break;
+          case "lt":
+            filters.push(`${mapped}:<${resolvedValue}`);
+            break;
+          default:
+            warnings.push(
+              `Unsupported range operator "${op}" on field "${field}"`
+            );
+        }
+      }
     } else {
       warnings.push(`Range conditions must be an object for "${field}"`);
     }
