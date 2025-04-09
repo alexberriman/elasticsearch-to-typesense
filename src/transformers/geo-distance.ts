@@ -73,6 +73,15 @@ export const transformGeoDistance = (
   }
 
   const resolvedField = resolveField(geoField, ctx);
+  if (resolvedField === undefined || resolvedField === null) {
+    warnings.push(`Skipped unmapped geo-distance field "${geoField}"`);
+
+    return {
+      query: {},
+      warnings,
+    };
+  }
+
   const filterBy = `${resolvedField}:(${latValue}, ${lonValue}, ${radiusKm} km)`;
 
   return {

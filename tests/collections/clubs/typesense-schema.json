@@ -1,0 +1,63 @@
+{
+  "name": "clubs",
+  "fields": [
+    { "name": "id", "type": "string" },
+    { "name": "name", "type": "string", "index": true, "infix": true, "stem": true },
+    { "name": "slug", "type": "string", "index": true },
+    { "name": "title", "type": "string", "index": true, "stem": true, "infix": true },
+    { "name": "description", "type": "string", "optional": true, "index": true, "stem": true },
+    
+    { "name": "suburb", "type": "string", "facet": true },
+    { "name": "city", "type": "string", "facet": true },
+    { "name": "state", "type": "string", "facet": true },
+    { "name": "country", "type": "string", "facet": true },
+    { "name": "location_slug", "type": "string", "optional": true },
+    
+    { "name": "latitude", "type": "float" },
+    { "name": "longitude", "type": "float" },
+    { "name": "location", "type": "geopoint" },
+    
+    { "name": "sport_types_values", "type": "string[]", "facet": true },
+    { "name": "sport_types_ids", "type": "string[]" },
+    
+    { "name": "club_types_values", "type": "string[]", "facet": true },
+    { "name": "club_types_ids", "type": "string[]" },
+    
+    { "name": "tags_values", "type": "string[]", "facet": true },
+    { "name": "tags_ids", "type": "string[]" },
+    
+    { "name": "status", "type": "string", "facet": true },
+    { "name": "verification_status", "type": "string", "optional": true },
+    { "name": "visibility", "type": "string", "facet": true },
+    { "name": "claim_status", "type": "string", "optional": true },
+    
+    { "name": "is_featured", "type": "bool" },
+    { "name": "is_closed", "type": "bool" },
+    { "name": "featured_date", "type": "int64", "optional": true },
+    
+    { "name": "members_count", "type": "int32" },
+    { "name": "established_year", "type": "int32", "optional": true },
+    
+    { "name": "avatar", "type": "string", "optional": true },
+    { "name": "banner_image", "type": "string", "optional": true },
+    { "name": "website", "type": "string", "optional": true },
+    
+    { "name": "created_at", "type": "int64" },
+    { "name": "updated_at", "type": "int64", "optional": true },
+    
+    { "name": "activities_count", "type": "int32", "default": 0 },
+    { "name": "has_email", "type": "bool", "optional": true },
+    { "name": "has_phone", "type": "bool", "optional": true },
+    { "name": "has_instagram", "type": "bool", "optional": true },
+    { "name": "has_facebook", "type": "bool", "optional": true },
+    { "name": "page_views", "type": "int64", "default": 0 },
+    { "name": "followers_count", "type": "int32", "default": 0 },
+    { "name": "transactions_count", "type": "int32", "default": 0 },
+    { "name": "last_activity_date", "type": "int64", "optional": true },
+    
+    { "name": "quality_score", "type": "float", "sort": true, "default": 0 }
+  ],
+  "default_sorting_field": "created_at",
+  "token_separators": ["-", "_", " "],
+  "enable_nested_fields": true
+}

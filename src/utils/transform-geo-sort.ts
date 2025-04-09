@@ -1,5 +1,6 @@
 import { resolveMappedField } from "./resolve-mapped-field.js";
 import { TransformerContext } from "../core/types.js";
+import { isNumeric } from "./is-numeric.js";
 
 export const transformGeoSort = (
   sortOptions: Record<string, any>,
@@ -27,8 +28,8 @@ export const transformGeoSort = (
   if (
     coordinates === undefined ||
     coordinates === null ||
-    typeof coordinates.lat !== "number" ||
-    typeof coordinates.lon !== "number"
+    !isNumeric(coordinates.lat) ||
+    !isNumeric(coordinates.lon)
   ) {
     warnings.push(`Invalid geo_distance coordinates for field '${fieldName}'`);
     return { warnings };
