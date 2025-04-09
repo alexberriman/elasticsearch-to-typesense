@@ -177,6 +177,7 @@ describe("integration", () => {
         activity_gender: "gender",
         activity_type_id: "type_id",
         activity_type_name: "type_name",
+        activity_type: "type",
         activity_sport_type_id: "sport_type_id",
         activity_sporttype_name: "sport_type_name",
         visibility: "visibility_id",
@@ -187,13 +188,17 @@ describe("integration", () => {
         activity_max_price: "max_price",
         activity_price: "max_price",
         activity_created_on: "createdAt",
-        organisation_id: "club_id",
-        organisation_avatar: "club_avatar",
         activity_subtitle: "club_name",
         activity_location: "geopoint",
         activity_intention: "intentions",
         activity_difficulties: "difficulties",
         activity_is_personal: "is_personal",
+        organisation_id: "club_id",
+        organisation_avatar: "club_avatar",
+        organisation_visibility: "club_visibility",
+        organisation_claim_status: "club_claim_status",
+        organisation_status: "club_status",
+        organisation_account_status: "club_account_status",
       },
     });
   };
@@ -207,11 +212,12 @@ describe("integration", () => {
       const transformer = getTransformer();
       const result = transformer.transform(query);
 
+      console.error("Original query:", JSON.stringify(query, null, 2));
+
       // For failing transforms, output the query and error then skip the rest
       if (result.ok === false) {
         transformFailures.push(queryNumber);
         console.error(`\nQUERY ${queryNumber} TRANSFORM FAILED:`);
-        console.error("Original query:", JSON.stringify(query, null, 2));
         console.error("Error:", result.error);
         return;
       }
