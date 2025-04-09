@@ -14,6 +14,7 @@ import { transformMultiMatch } from "../transformers/multi-match.js";
 import { transformPrefix } from "../transformers/prefix.js";
 import { normalizeParentheses } from "../utils/normalize-parentheses.js";
 import { transformExists } from "../transformers/exists.js";
+import { transformGeoDistance } from "../transformers/geo-distance.js";
 
 type TransformerFn = (
   query: any,
@@ -30,6 +31,7 @@ const transformers: Record<string, TransformerFn> = {
   exists: transformExists,
   multi_match: transformMultiMatch,
   prefix: transformPrefix,
+  geo_distance: transformGeoDistance,
 };
 
 export const transformQueryRecursively = (

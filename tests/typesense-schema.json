@@ -18,6 +18,7 @@
     { "name": "gender", "type": "string" },
     { "name": "type_id", "type": "string" },
     { "name": "type_name", "type": "string" },
+    { "name": "type", "type": "string" },
     { "name": "sport_type_id", "type": "string" },
     { "name": "sport_type_name", "type": "string" },
     { "name": "facility_id", "type": "string" },
@@ -47,7 +48,10 @@
     { "name": "club_verified", "type": "bool" },
     { "name": "club_slug", "type": "string" },
     { "name": "club_avatar", "type": "string" },
-    { "name": "club_background", "type": "string" }
+    { "name": "club_status", "type": "string" },
+    { "name": "club_account_status", "type": "string" },
+    { "name": "club_visibility", "type": "string" },
+    { "name": "club_claim_status", "type": "string" }
   ],
   "default_sorting_field": "createdAt",
   "token_separators": ["-", "_", " "],
