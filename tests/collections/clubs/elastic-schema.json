@@ -1,0 +1,176 @@
+{
+  "properties" : {
+    "city" : {
+      "type" : "keyword"
+    },
+    "country" : {
+      "type" : "keyword"
+    },
+    "id" : {
+      "type" : "keyword"
+    },
+    "isFeatured" : {
+      "type" : "boolean"
+    },
+    "isFeaturedDate" : {
+      "type" : "date"
+    },
+    "optimised_avatar" : {
+      "type" : "nested",
+      "properties" : {
+        "img_lg" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "img_med" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "img_sm" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        }
+      }
+    },
+    "organisation_account_status" : {
+      "type" : "keyword"
+    },
+    "organisation_associations_id" : {
+      "type" : "keyword"
+    },
+    "organisation_associations_name" : {
+      "type" : "text"
+    },
+    "organisation_background_image" : {
+      "type" : "nested",
+      "properties" : {
+        "img_lg" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "img_med" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "img_sm" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        }
+      }
+    },
+    "organisation_background_video" : {
+      "type" : "nested"
+    },
+    "organisation_claim_status" : {
+      "type" : "keyword"
+    },
+    "organisation_created_by" : {
+      "type" : "keyword"
+    },
+    "organisation_created_on" : {
+      "type" : "date"
+    },
+    "organisation_followed_users" : {
+      "type" : "keyword"
+    },
+    "organisation_image_url" : {
+      "type" : "keyword"
+    },
+    "organisation_location" : {
+      "type" : "geo_point"
+    },
+    "organisation_location_slug" : {
+      "type" : "text"
+    },
+    "organisation_name" : {
+      "type" : "keyword"
+    },
+    "organisation_nic_name" : {
+      "type" : "text",
+      "fields" : {
+        "keyword" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        }
+      }
+    },
+    "organisation_nickname" : {
+      "type" : "keyword"
+    },
+    "organisation_parcipated_users" : {
+      "type" : "keyword"
+    },
+    "organisation_profile_admins" : {
+      "type" : "keyword"
+    },
+    "organisation_sport_types_id" : {
+      "type" : "keyword"
+    },
+    "organisation_sport_types_name" : {
+      "type" : "text"
+    },
+    "organisation_status" : {
+      "type" : "keyword"
+    },
+    "organisation_title" : {
+      "type" : "text"
+    },
+    "organisation_types_id" : {
+      "type" : "keyword"
+    },
+    "organisation_types_name" : {
+      "type" : "text"
+    },
+    "organisation_verification_status" : {
+      "type" : "keyword"
+    },
+    "organisation_visibility" : {
+      "type" : "keyword"
+    },
+    "state" : {
+      "type" : "keyword"
+    },
+    "suburb" : {
+      "type" : "keyword"
+    },
+    "visibility" : {
+      "type" : "text",
+      "fields" : {
+        "keyword" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        }
+      }
+    }
+  }
+}
