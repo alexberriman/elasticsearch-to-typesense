@@ -3,6 +3,9 @@
   "compilerOptions": {
     "outDir": "./dist/esm",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "NodeNext",
+    "declaration": false,
+    "emitDeclarationOnly": false,
+    "esModuleInterop": true
   }
 }
