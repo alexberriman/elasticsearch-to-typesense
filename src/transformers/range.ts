@@ -7,6 +7,7 @@ import { resolveReservedKeyword } from "../utils/handle-reserved-keywords.js";
 import { resolveMappedField } from "../utils/resolve-mapped-field.js";
 import { formatTypesenseFilterValue } from "../utils/quote-value.js";
 import { coerceValueFromSchema } from "../utils/coerce-value-from-schema.js";
+import { applyValueTransformer } from "../utils/apply-value-transformer.js";
 
 export const transformRange = (
   range: Record<string, any>,
@@ -35,8 +36,16 @@ export const transformRange = (
           ctx.typesenseSchema
         );
 
+        // Apply value transformer if provided
+        const transformedValue = applyValueTransformer({
+          elasticField: field,
+          typesenseField: mapped,
+          value: resolvedValue,
+          ctx,
+        });
+
         let clause: string | null = null;
-        const formattedValue = formatTypesenseFilterValue(resolvedValue);
+        const formattedValue = formatTypesenseFilterValue(transformedValue);
         switch (op) {
           case "gte":
             clause = `${mapped}:>= ${formattedValue}`;

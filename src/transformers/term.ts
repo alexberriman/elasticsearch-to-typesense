@@ -5,6 +5,7 @@ import {
 } from "../core/types.js";
 import { resolveMappedField } from "../utils/resolve-mapped-field.js";
 import { formatTypesenseFilterValue } from "../utils/quote-value.js";
+import { applyValueTransformer } from "../utils/apply-value-transformer.js";
 
 /**
  * Interface for Elasticsearch term query
@@ -58,8 +59,16 @@ export const transformTerm = (
       value = termValue;
     }
 
+    // Apply value transformer if provided
+    const transformedValue = applyValueTransformer({
+      elasticField: field,
+      typesenseField: mapped,
+      value,
+      ctx,
+    });
+
     // Format the value properly for Typesense filter syntax
-    const formattedValue = formatTypesenseFilterValue(value);
+    const formattedValue = formatTypesenseFilterValue(transformedValue);
     parts.push(`${mapped}:= ${formattedValue}`);
   }
 

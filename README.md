@@ -186,7 +186,63 @@ if (prefixResult.ok) {
 }
 ```
 
-### Using with Typesense Schema
+### Using with Value Transformer
+
+```typescript
+import { createTransformer } from 'elasticsearch-to-typesense';
+
+// Initialize the transformer with a value transformer function
+const transformer = createTransformer({
+  propertyMapping: {
+    'title': 'title',
+    'category': 'category',
+    'tags': 'tags'
+  },
+  
+  // Add a valueTransformer to handle case sensitivity differences
+  valueTransformer: (field, value, context) => {
+    // Check if the value is a string
+    if (typeof value === 'string') {
+      // For category field, transform to lowercase (since Typesense has lowercase values stored)
+      if (field === 'category') {
+        return value.toLowerCase();
+      }
+      
+      // For tags field, always transform to lowercase for consistency
+      if (field === 'tags') {
+        // If it's an array of tags
+        if (Array.isArray(value)) {
+          return value.map(tag => typeof tag === 'string' ? tag.toLowerCase() : tag);
+        }
+        return value.toLowerCase();
+      }
+    }
+    
+    // For all other values or non-string values, return as-is
+    return value;
+  }
+});
+
+// Example query with case-sensitive values that will be transformed
+const elasticQuery = {
+  query: {
+    bool: {
+      must: [
+        { match: { title: "Smartphone" } }
+      ],
+      filter: [
+        { term: { category: "Electronics" } },  // This will be transformed to lowercase
+        { terms: { tags: ["PREMIUM", "New", "FEATURED"] } }  // These will be transformed to lowercase
+      ]
+    }
+  }
+};
+
+// The resulting Typesense query would use the transformed lowercase values
+// { filter_by: "title:= \"Smartphone\" && category:= \"electronics\" && tags:= [\"premium\", \"new\", \"featured\"]" }
+```
+
+### Using with Typesense Schema and Advanced Value Transformation
 
 ```typescript
 import { createTransformer } from 'elasticsearch-to-typesense';
@@ -197,7 +253,7 @@ const typesenseSchema = {
     { name: 'title', type: 'string' },
     { name: 'description', type: 'string' },
     { name: 'price', type: 'float' },
-    { name: 'category_id', type: 'string' },
+    { name: 'category_id', type: 'string', facet: true },
     { name: 'location', type: 'geopoint' }
   ]
 };
@@ -213,13 +269,36 @@ const elasticSchema = {
   }
 };
 
-// Initialize the transformer with auto-mapping
-// This will automatically generate propertyMapping based on the schemas
+// Initialize the transformer with auto-mapping and a value transformer
 const transformer = createTransformer({
   typesenseSchema,  // Typesense schema definition
   elasticSchema,    // Elasticsearch schema definition
   autoMapProperties: true,  // Enable auto-mapping between schemas
-  defaultScoreField: 'quality_score:desc'  // Default score field for results
+  defaultScoreField: 'quality_score:desc',  // Default score field for results
+  
+  // Add a value transformer that uses schema information
+  valueTransformer: (field, value, context) => {
+    // Access schema details from the context
+    const { typesenseFieldSchema } = context;
+    
+    if (typeof value === 'string') {
+      // Transform all facet field values to lowercase
+      if (typesenseFieldSchema?.facet === true) {
+        return value.toLowerCase();
+      }
+      
+      // Keep search query fields as-is for better matching
+      return value;
+    }
+    
+    // For numeric fields, ensure we have a number
+    if (field === 'price' && typeof value === 'string') {
+      return parseFloat(value);
+    }
+    
+    // For all other values, return as-is
+    return value;
+  }
   
   // Note: When autoMapProperties is true, the library will automatically map:
   // - Elasticsearch 'title' → Typesense 'title'
@@ -268,6 +347,7 @@ The `createTransformer` function accepts the following options:
 | `fieldMatchStrategy` | `(elasticField: string, typesenseField: string) => boolean` | Custom function to determine if fields match for auto-mapping. Receives an Elasticsearch field name and a Typesense field name and should return true if they should be mapped to each other. | `undefined` |
 | `defaultQueryString` | `string` | Default search query string to use when none is provided in the input query. | `*` |
 | `defaultScoreField` | `string` | Default field to use for scoring/relevance when no sorting is specified. | `_text_match:desc` |
+| `valueTransformer` | `(field: string, value: any, context: object) => any` | Optional function to transform field values from Elasticsearch to Typesense. Useful when values differ between systems (e.g., case sensitivity differences). Receives the field name, value, and context object with schema information. | `undefined` |
 | `mapResultsToElasticSchema` | `(documents: any \| any[]) => any \| any[] \| Promise<any \| any[]>` | Optional function to map Typesense search results back to Elasticsearch format. When provided, the transformer will expose a `mapResults` function. If not provided but `propertyMapping` is set, a default mapping function will be created based on inverting the property mapping. | `undefined` |
 
 ## Typesense Query Parameters

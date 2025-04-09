@@ -15,6 +15,27 @@ export type TransformResult<T> = {
  */
 export type PropertyMapping = Record<string, string>;
 
+/**
+ * Function to transform field values between Elasticsearch and Typesense
+ *
+ * @param field - The field name in Typesense (already mapped from Elasticsearch)
+ * @param value - The original value from Elasticsearch query
+ * @param context - Additional context like schema information
+ * @returns The transformed value to use in Typesense query
+ */
+export type ValueTransformer = (
+  field: string,
+  value: any,
+  context: {
+    elasticField?: string;
+    typesenseField: string;
+    typesenseSchema?: TypesenseSchema;
+    elasticSchema?: ElasticSchema;
+    elasticFieldSchema?: Record<string, any>;
+    typesenseFieldSchema?: Record<string, any>;
+  }
+) => any;
+
 export interface TransformerContext {
   /**
    * Maps Elasticsearch field names (keys) to Typesense field names (values)
@@ -24,6 +45,10 @@ export interface TransformerContext {
   elasticSchema?: ElasticSchema;
   negated?: boolean;
   defaultScoreField?: string;
+  /**
+   * Optional function to transform field values from Elasticsearch to Typesense
+   */
+  valueTransformer?: ValueTransformer;
 }
 
 // Define ElasticsearchQuery as a recursive type that can handle nested objects
@@ -181,4 +206,13 @@ export interface TransformerOptions {
    * Otherwise, it operates on generic Record<string, any> objects.
    */
   mapResultsToElasticSchema?: ResultMapper;
+
+  /**
+   * Optional function to transform field values from Elasticsearch to Typesense
+   * This is useful when values differ between systems (e.g., case sensitivity differences)
+   *
+   * The function receives the field name, value, and context with schema information,
+   * and should return the transformed value to use in the Typesense query.
+   */
+  valueTransformer?: ValueTransformer;
 }

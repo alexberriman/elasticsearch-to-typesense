@@ -4,6 +4,7 @@ import {
   TypesenseQuery,
 } from "../core/types.js";
 import { resolveMappedField } from "../utils/resolve-mapped-field.js";
+import { applyValueTransformer } from "../utils/apply-value-transformer.js";
 
 /**
  * Interface for Elasticsearch prefix query
@@ -64,9 +65,17 @@ export const transformPrefix = (
     };
   }
 
+  // Apply value transformer if provided
+  const transformedValue = applyValueTransformer({
+    elasticField: field,
+    typesenseField: mappedField,
+    value: prefixValue,
+    ctx,
+  });
+
   // Construct the Typesense query parameters
   const query: Partial<TypesenseQuery> = {
-    q: `${prefixValue}*`, // Add asterisk for prefix matching
+    q: `${transformedValue}*`, // Add asterisk for prefix matching
     query_by: mappedField,
   };
 
