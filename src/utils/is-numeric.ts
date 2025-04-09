@@ -11,7 +11,7 @@ export function isNumeric(value: unknown): boolean {
     return false;
   }
 
-  const numericRegex = /^-?\d+(\.\d+)?(e[-+]?\d+)?$/i;
+  const numericRegex = /^[+-]?\d+(\.\d+)?(e[-+]?\d+)?$/i;
   if (!numericRegex.test(value)) {
     return false;
   }
