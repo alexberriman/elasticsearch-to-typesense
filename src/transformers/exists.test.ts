@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { transformExists } from "./exists";
-import { TransformerContext } from "../core/types";
-import * as resolveFieldModule from "../utils/resolve-mapped-field";
+import { transformExists } from "./exists.js";
+import { TransformerContext } from "../core/types.js";
+import * as resolveFieldModule from "../utils/resolve-mapped-field.js";
 
 describe("transformExists", () => {
   const createContext = (

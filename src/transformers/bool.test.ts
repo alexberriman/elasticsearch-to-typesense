@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { transformBool } from "./bool";
-import { TransformerContext } from "../core/types";
-import * as transformer from "../core/transformer";
+import { transformBool } from "./bool.js";
+import { TransformerContext } from "../core/types.js";
+import * as transformer from "../core/transformer.js";
 
 // Mock the transformQueryRecursively function
 vi.mock("../core/transformer", () => ({

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { createPaginationAndSort } from "./common";
-import { TransformerContext } from "../core/types";
-import * as resolveFieldModule from "../utils/resolve-mapped-field";
-import * as geoSortModule from "../utils/transform-geo-sort";
+import { createPaginationAndSort } from "./common.js";
+import { TransformerContext } from "../core/types.js";
+import * as resolveFieldModule from "../utils/resolve-mapped-field.js";
+import * as geoSortModule from "../utils/transform-geo-sort.js";
 
 describe("createPaginationAndSort", () => {
   const createContext = (

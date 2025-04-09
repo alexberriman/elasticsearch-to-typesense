@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { transformGeoSort } from "./transform-geo-sort";
-import { resolveMappedField } from "./resolve-mapped-field";
+import { transformGeoSort } from "./transform-geo-sort.js";
+import { resolveMappedField } from "./resolve-mapped-field.js";
 
 vi.mock("./resolve-mapped-field", () => ({
   resolveMappedField: vi.fn(),

@@ -1,4 +1,4 @@
-import { TransformerContext } from "../core/types";
+import { TransformerContext } from "../core/types.js";
 
 export const resolveMappedField = (
   field: string | null | undefined,
@@ -18,5 +18,5 @@ export const resolveMappedField = (
   const valid =
     ctx.typesenseSchema?.fields.some((f) => f.name === mapped) ?? true;
 
-  return valid ? mapped : undefined;
+  return valid === true ? mapped : undefined;
 };

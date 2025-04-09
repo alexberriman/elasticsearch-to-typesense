@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createDefaultMapper } from "./map-results-to-elastic";
+import { createDefaultMapper } from "./map-results-to-elastic.js";
 
 describe("createDefaultMapper", () => {
   it("creates a function that maps a single document", () => {

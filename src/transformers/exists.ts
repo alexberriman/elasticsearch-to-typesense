@@ -1,9 +1,9 @@
-import { resolveMappedField } from "../utils/resolve-mapped-field";
+import { resolveMappedField } from "../utils/resolve-mapped-field.js";
 import {
   TransformerContext,
   TransformResult,
   TypesenseQuery,
-} from "../core/types";
+} from "../core/types.js";
 
 interface ExistsQuery {
   field?: string;

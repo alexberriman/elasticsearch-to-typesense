@@ -1,14 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
-import { transformQueryRecursively } from "./transformer";
-import { TransformerContext } from "./types";
-import * as matchTransformer from "../transformers/match";
-import * as termsTransformer from "../transformers/terms";
-import * as rangeTransformer from "../transformers/range";
-import * as boolTransformer from "../transformers/bool";
-import * as functionScoreTransformer from "../transformers/function-score";
-import * as existsTransformer from "../transformers/exists";
-import * as multiMatchTransformer from "../transformers/multi-match";
-import * as normalizeParentheses from "../utils/normalize-parentheses";
+import { transformQueryRecursively } from "./transformer.js";
+import { TransformerContext } from "./types.js";
+import * as matchTransformer from "../transformers/match.js";
+import * as termsTransformer from "../transformers/terms.js";
+import * as rangeTransformer from "../transformers/range.js";
+import * as boolTransformer from "../transformers/bool.js";
+import * as functionScoreTransformer from "../transformers/function-score.js";
+import * as existsTransformer from "../transformers/exists.js";
+import * as multiMatchTransformer from "../transformers/multi-match.js";
+import * as normalizeParentheses from "../utils/normalize-parentheses.js";
 
 // Mock all the transformers
 vi.mock("../transformers/match", () => ({

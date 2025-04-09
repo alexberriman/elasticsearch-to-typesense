@@ -2,11 +2,22 @@
   "name": "elasticsearch-to-typesense",
   "version": "1.2.0",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "scripts": {
-    "build": "tsc",
-    "build:clean": "rm -rf dist && tsc",
+    "build": "npm run build:types && npm run build:esm && npm run build:cjs",
+    "build:types": "tsc -p tsconfig.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:clean": "rm -rf dist && npm run build",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "test:integration": "vitest --config vitest.integration.config.ts run",
@@ -15,6 +26,7 @@
     "lint:tests": "eslint 'src/**/*.test.ts' 'tests/**/*.ts'",
     "lint:all": "eslint '**/*.ts'",
     "lint:fix": "eslint '**/*.ts' --fix",
+    "fix:imports": "node scripts/add-js-extensions.js",
     "type-check": "tsc --noEmit",
     "type-check:tests": "tsc -p tsconfig.test.json --noEmit",
     "format": "prettier --write 'src/**/*.{js,ts}'",
@@ -52,6 +64,7 @@
     "@typescript-eslint/parser": "^8.29.1",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.6",
     "prettier": "^3.5.3",
     "semantic-release": "^22.0.12",

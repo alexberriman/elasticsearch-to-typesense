@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { transformRange } from "./range";
-import { TransformerContext } from "../core/types";
-import * as handleReservedKeywords from "../utils/handle-reserved-keywords";
-import * as coerceValueModule from "../utils/coerce-value-from-schema";
-import * as resolveFieldModule from "../utils/resolve-mapped-field";
+import { transformRange } from "./range.js";
+import { TransformerContext } from "../core/types.js";
+import * as handleReservedKeywords from "../utils/handle-reserved-keywords.js";
+import * as coerceValueModule from "../utils/coerce-value-from-schema.js";
+import * as resolveFieldModule from "../utils/resolve-mapped-field.js";
 
 describe("transformRange", () => {
   const createContext = (

@@ -6,7 +6,7 @@ import {
   TypesenseQuery,
   TransformerContext,
   TransformerOptions,
-} from "./types";
+} from "./types.js";
 
 describe("types", () => {
   describe("Result type", () => {

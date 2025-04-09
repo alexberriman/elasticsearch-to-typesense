@@ -1,4 +1,4 @@
-import { ElasticSchema, TypesenseSchema } from "../core/types";
+import { ElasticSchema, TypesenseSchema } from "../core/types.js";
 
 export const suggestTransformHints = (
   elastic: ElasticSchema,
@@ -16,7 +16,7 @@ export const suggestTransformHints = (
       match(elasticField, tsField.name)
     );
 
-    if (!tsMatch) {
+    if (tsMatch === undefined) {
       hints.push(
         `No Typesense field for Elasticsearch field "${elasticField}"`
       );

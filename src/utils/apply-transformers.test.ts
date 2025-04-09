@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { applyTransformers } from "./apply-transformers";
-import { ElasticsearchQuery, TransformerContext } from "../core/types";
+import { applyTransformers } from "./apply-transformers.js";
+import { ElasticsearchQuery, TransformerContext } from "../core/types.js";
 
 describe("applyTransformers", () => {
   const mockContext: TransformerContext = {

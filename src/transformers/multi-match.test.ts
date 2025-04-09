@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { transformMultiMatch } from "./multi-match";
-import { TransformerContext } from "../core/types";
+import { transformMultiMatch } from "./multi-match.js";
+import { TransformerContext } from "../core/types.js";
 
 // Mock the resolve field functions
 vi.mock("../utils/resolve-mapped-field", () => ({

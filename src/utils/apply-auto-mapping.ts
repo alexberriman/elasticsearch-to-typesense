@@ -1,4 +1,4 @@
-import { ElasticSchema, TypesenseSchema } from "../core/types";
+import { ElasticSchema, TypesenseSchema } from "../core/types.js";
 
 export const applyAutoMapping = (
   elastic: ElasticSchema,

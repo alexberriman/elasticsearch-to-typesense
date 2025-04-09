@@ -1,10 +1,10 @@
-import { normalizeParentheses } from "./normalize-parentheses";
+import { normalizeParentheses } from "./normalize-parentheses.js";
 import {
   ElasticsearchQuery,
   TransformerContext,
   TypesenseQuery,
   TransformResult,
-} from "../core/types";
+} from "../core/types.js";
 
 type TransformerFn = (
   query: any,
@@ -35,7 +35,10 @@ export const applyTransformers = (
   return {
     query: {
       q: "*",
-      filter_by: normalizeParentheses(filterParts.join(" && ")) || undefined,
+      filter_by:
+        filterParts.length > 0
+          ? normalizeParentheses(filterParts.join(" && "))
+          : undefined,
     },
     warnings,
   };

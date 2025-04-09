@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveNestedField } from "./resolve-nested-field";
+import { resolveNestedField } from "./resolve-nested-field.js";
 
 describe("resolveNestedField", () => {
   const testDocument = {

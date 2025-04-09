@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeParentheses } from "./normalize-parentheses";
+import { normalizeParentheses } from "./normalize-parentheses.js";
 
 describe("normalizeParentheses", () => {
   it("should remove redundant outer parentheses", () => {

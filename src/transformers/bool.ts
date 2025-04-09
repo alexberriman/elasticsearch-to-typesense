@@ -2,9 +2,9 @@ import {
   TransformerContext,
   TransformResult,
   TypesenseQuery,
-} from "../core/types";
-import { transformQueryRecursively } from "../core/transformer";
-import { normalizeParentheses } from "../utils/normalize-parentheses";
+} from "../core/types.js";
+import { transformQueryRecursively } from "../core/transformer.js";
+import { normalizeParentheses } from "../utils/normalize-parentheses.js";
 
 interface BoolQuery {
   must?: unknown[];
