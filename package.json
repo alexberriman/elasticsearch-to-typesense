@@ -1,6 +1,6 @@
 {
   "name": "elasticsearch-to-typesense",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -9,7 +9,7 @@
     ".": {
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/esm/index.js" 
+        "default": "./dist/esm/index.js"
       },
       "require": {
         "types": "./dist/index.d.ts",
@@ -21,7 +21,7 @@
     "build": "npm run build:clean",
     "build:clean": "rm -rf dist && npm run build:types && npm run build:esm && npm run build:cjs && npm run add-package-jsons",
     "build:types": "tsc -p tsconfig.json",
-    "build:esm": "tsc -p tsconfig.esm.json", 
+    "build:esm": "tsc -p tsconfig.esm.json",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "add-package-jsons": "mkdir -p dist/cjs dist/esm && echo '{\"type\":\"module\"}' > dist/esm/package.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "test": "vitest run",
