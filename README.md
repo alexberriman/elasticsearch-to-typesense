@@ -6,6 +6,32 @@ A utility library for converting Elasticsearch queries to Typesense format.
 
 This library is designed to translate Elasticsearch 6.8 queries to Typesense v28 format, helping you migrate your search functionality without rewriting all your queries.
 
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Example Usage](#example-usage)
+  - [Basic Query Transformation](#basic-query-transformation)
+  - [Multi-Match and Prefix Queries](#multi-match-and-prefix-queries)
+  - [Using with Value Transformer](#using-with-value-transformer)
+  - [Using with Typesense Schema and Advanced Value Transformation](#using-with-typesense-schema-and-advanced-value-transformation)
+- [Configuration Options](#configuration-options)
+- [Typesense Query Parameters](#typesense-query-parameters)
+- [Result Type Pattern](#result-type-pattern)
+  - [What is the Result Pattern?](#what-is-the-result-pattern)
+  - [Using the Result Pattern](#using-the-result-pattern)
+  - [Helper Functions](#helper-functions)
+- [Supported Query Types](#supported-query-types)
+- [Mapping Results Back to Elasticsearch Format](#mapping-results-back-to-elasticsearch-format)
+  - [Custom Result Mapping](#custom-result-mapping)
+  - [Async Mapping with External Data Sources](#async-mapping-with-external-data-sources)
+- [Limitations](#limitations)
+- [Contributing](#contributing)
+  - [Development Setup](#development-setup)
+  - [Release Process](#release-process)
+- [License](#license)
+
 ## Features
 
 - Transform Elasticsearch queries to Typesense syntax
