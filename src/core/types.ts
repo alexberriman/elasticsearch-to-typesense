@@ -1,4 +1,5 @@
-export type Result<T> = { ok: true; value: T } | { ok: false; error: string };
+import type { Result } from "../utils/result.js";
+export type { Result };
 
 export type TransformResult<T> = {
   query: T;

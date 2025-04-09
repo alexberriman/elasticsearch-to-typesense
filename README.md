@@ -417,7 +417,7 @@ import {
   err, 
   isOk, 
   isErr 
-} from 'elasticsearch-to-typesense/dist/utils/result';
+} from 'elasticsearch-to-typesense';
 
 // Create a successful result
 const successResult = ok({ some: 'data' });
@@ -432,6 +432,15 @@ if (isOk(result)) {
 } else if (isErr(result)) {
   // TypeScript knows result.error is available here
   console.error(result.error);
+}
+
+// Alternatively, you can use simple boolean checks
+if (!result.ok) {
+  // TypeScript knows result.error is available here
+  console.error(result.error);
+} else {
+  // TypeScript knows result.value is available here
+  console.log(result.value);
 }
 ```
 
