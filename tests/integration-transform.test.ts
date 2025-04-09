@@ -185,6 +185,7 @@ describe("integration", () => {
         activity_date_to: "to_date_time",
         activity_min_price: "min_price",
         activity_max_price: "max_price",
+        activity_price: "max_price",
         activity_created_on: "createdAt",
         organisation_id: "club_id",
         organisation_avatar: "club_avatar",

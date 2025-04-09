@@ -1,5 +1,14 @@
-export type Ok<T> = { ok: true; value: T };
-export type Err = { ok: false; error: string };
+export interface Ok<T> {
+  ok: true;
+  value: T;
+  error?: never;
+}
+
+export interface Err {
+  ok: false;
+  error: string;
+  value?: never;
+}
 
 export type Result<T> = Ok<T> | Err;
 
