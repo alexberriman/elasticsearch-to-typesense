@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { applyAutoMapping } from "./apply-auto-mapping";
-import { ElasticSchema, TypesenseSchema } from "../core/types";
+import { applyAutoMapping } from "./apply-auto-mapping.js";
+import { ElasticSchema, TypesenseSchema } from "../core/types.js";
 
 describe("applyAutoMapping", () => {
   it("should map Elasticsearch fields to Typesense fields", () => {

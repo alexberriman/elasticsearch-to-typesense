@@ -1,4 +1,4 @@
-import { TypesenseSchema } from "../core/types";
+import { TypesenseSchema } from "../core/types.js";
 
 /**
  * Convert Elasticsearch date format strings to epoch timestamp
@@ -80,10 +80,10 @@ export const coerceValueFromSchema = (
   value: any,
   schema?: TypesenseSchema
 ): any => {
-  if (!schema) return value;
+  if (schema === undefined) return value;
 
   const tsField = schema.fields.find((f) => f.name === field);
-  if (!tsField) return value;
+  if (tsField === undefined) return value;
 
   const { type } = tsField;
 

@@ -3,17 +3,17 @@ import {
   TransformerContext,
   TransformResult,
   TypesenseQuery,
-} from "./types";
-import { transformMatch } from "../transformers/match";
-import { transformTerms } from "../transformers/terms";
-import { transformTerm } from "../transformers/term";
-import { transformRange } from "../transformers/range";
-import { transformBool } from "../transformers/bool";
-import { transformFunctionScore } from "../transformers/function-score";
-import { transformMultiMatch } from "../transformers/multi-match";
-import { transformPrefix } from "../transformers/prefix";
-import { normalizeParentheses } from "../utils/normalize-parentheses";
-import { transformExists } from "../transformers/exists";
+} from "./types.js";
+import { transformMatch } from "../transformers/match.js";
+import { transformTerms } from "../transformers/terms.js";
+import { transformTerm } from "../transformers/term.js";
+import { transformRange } from "../transformers/range.js";
+import { transformBool } from "../transformers/bool.js";
+import { transformFunctionScore } from "../transformers/function-score.js";
+import { transformMultiMatch } from "../transformers/multi-match.js";
+import { transformPrefix } from "../transformers/prefix.js";
+import { normalizeParentheses } from "../utils/normalize-parentheses.js";
+import { transformExists } from "../transformers/exists.js";
 
 type TransformerFn = (
   query: any,
@@ -89,8 +89,8 @@ export const transformQueryRecursively = (
     }
   }
 
-  const filter_by =
-    normalizeParentheses([...results].join(" && ")) || undefined;
+  const filterStr = normalizeParentheses([...results].join(" && "));
+  const filter_by = filterStr !== "" ? filterStr : undefined;
 
   return {
     query: {

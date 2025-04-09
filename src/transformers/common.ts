@@ -1,6 +1,6 @@
-import { resolveMappedField } from "../utils/resolve-mapped-field";
-import { transformGeoSort } from "../utils/transform-geo-sort";
-import { TransformerContext } from "../core/types";
+import { resolveMappedField } from "../utils/resolve-mapped-field.js";
+import { transformGeoSort } from "../utils/transform-geo-sort.js";
+import { TransformerContext } from "../core/types.js";
 
 export const createPaginationAndSort = (
   input: any,

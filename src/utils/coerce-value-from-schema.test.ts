@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { coerceValueFromSchema } from "./coerce-value-from-schema";
-import { TypesenseSchema } from "../core/types";
+import { coerceValueFromSchema } from "./coerce-value-from-schema.js";
+import { TypesenseSchema } from "../core/types.js";
 
 describe("coerceValueFromSchema", () => {
   const mockSchema: TypesenseSchema = {

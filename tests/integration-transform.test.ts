@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeAll, afterAll } from "vitest";
 import Typesense from "typesense";
-import { createTransformer, ElasticSchema } from "../src";
+import { createTransformer, ElasticSchema } from "../src/index.js";
 import queriesJson from "./queries.json";
 import typesenseSchema from "./typesense-schema.json";
 import elasticSchema from "./elastic-schema.json";
@@ -216,7 +216,7 @@ describe("integration", () => {
       }
 
       // Aggregate warnings
-      if (result.ok && result.value.warnings.length > 0) {
+      if (result.ok === true && result.value.warnings.length > 0) {
         for (const warning of result.value.warnings) {
           if (warningsSummary.has(warning) === false) {
             warningsSummary.set(warning, { count: 0, queries: [] });

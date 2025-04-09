@@ -2,6 +2,7 @@ import typescript from "@typescript-eslint/eslint-plugin";
 import typescriptParser from "@typescript-eslint/parser";
 import prettier from "eslint-plugin-prettier";
 import prettierConfig from "eslint-config-prettier";
+import importPlugin from "eslint-plugin-import";
 
 const commonParserOptions = {
   ecmaVersion: 2020,
@@ -42,6 +43,7 @@ export default [
     plugins: {
       "@typescript-eslint": typescript,
       prettier: prettier,
+      import: importPlugin,
     },
     rules: {
       ...typescript.configs.recommended.rules,
@@ -59,6 +61,8 @@ export default [
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-unsafe-call": "off",
       "@typescript-eslint/no-unsafe-return": "off",
+      // Enforce .js extension for imports in ESM
+      "import/extensions": ["error", "ignorePackages", { "ts": "never", "js": "always" }],
     },
   },
   {
@@ -82,6 +86,7 @@ export default [
     plugins: {
       "@typescript-eslint": typescript,
       prettier: prettier,
+      import: importPlugin,
     },
     rules: {
       ...typescript.configs.recommended.rules,

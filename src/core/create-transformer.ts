@@ -1,9 +1,9 @@
-import { applyAutoMapping } from "../utils/apply-auto-mapping";
-import { suggestTransformHints } from "../utils/suggest-transform-hints";
-import { createPaginationAndSort } from "../transformers/common";
-import { transformQueryRecursively } from "./transformer";
-import { createDefaultMapper } from "../utils/map-results-to-elastic";
-import { ok, err } from "../utils/result";
+import { applyAutoMapping } from "../utils/apply-auto-mapping.js";
+import { suggestTransformHints } from "../utils/suggest-transform-hints.js";
+import { createPaginationAndSort } from "../transformers/common.js";
+import { transformQueryRecursively } from "./transformer.js";
+import { createDefaultMapper } from "../utils/map-results-to-elastic.js";
+import { ok, err } from "../utils/result.js";
 import {
   Result,
   TransformResult,
@@ -11,7 +11,7 @@ import {
   TransformerContext,
   TypesenseQuery,
   ResultMapper,
-} from "./types";
+} from "./types.js";
 
 /**
  * Creates a transformer function that converts Elasticsearch queries to Typesense queries
@@ -81,7 +81,7 @@ export const createTransformer = (opts: TransformerOptions) => {
   };
 
   // Determine if we should provide a mapResults function
-  if (opts.mapResultsToElasticSchema) {
+  if (opts.mapResultsToElasticSchema !== undefined) {
     // Use the provided mapper function
     return {
       transform,

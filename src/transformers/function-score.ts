@@ -2,8 +2,8 @@ import {
   TransformerContext,
   TransformResult,
   TypesenseQuery,
-} from "../core/types";
-import { transformQueryRecursively } from "../core/transformer";
+} from "../core/types.js";
+import { transformQueryRecursively } from "../core/transformer.js";
 
 interface FunctionScoreQuery {
   query?: unknown;

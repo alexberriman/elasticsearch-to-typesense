@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { quoteValue } from "./quote-value";
+import { quoteValue } from "./quote-value.js";
 
 describe("quoteValue", () => {
   it("should quote string values", () => {

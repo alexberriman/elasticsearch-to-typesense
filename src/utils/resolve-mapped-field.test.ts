@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { resolveMappedField } from "./resolve-mapped-field";
-import { TransformerContext, TypesenseSchema } from "../core/types";
+import { resolveMappedField } from "./resolve-mapped-field.js";
+import { TransformerContext, TypesenseSchema } from "../core/types.js";
 
 describe("resolveMappedField", () => {
   const mockSchema: TypesenseSchema = {

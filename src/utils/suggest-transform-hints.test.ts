@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { suggestTransformHints } from "./suggest-transform-hints";
-import { ElasticSchema, TypesenseSchema } from "../core/types";
+import { suggestTransformHints } from "./suggest-transform-hints.js";
+import { ElasticSchema, TypesenseSchema } from "../core/types.js";
 
 describe("suggestTransformHints", () => {
   const elasticSchema: ElasticSchema = {

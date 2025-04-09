@@ -1,4 +1,4 @@
-import { PropertyMapping } from "../core/types";
+import { PropertyMapping } from "../core/types.js";
 
 /**
  * Creates a default mapper function for converting Typesense results to Elasticsearch format

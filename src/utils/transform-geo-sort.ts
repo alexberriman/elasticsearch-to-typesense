@@ -1,5 +1,5 @@
-import { resolveMappedField } from "./resolve-mapped-field";
-import { TransformerContext } from "../core/types";
+import { resolveMappedField } from "./resolve-mapped-field.js";
+import { TransformerContext } from "../core/types.js";
 
 export const transformGeoSort = (
   sortOptions: Record<string, any>,

@@ -2,9 +2,9 @@ import {
   TransformerContext,
   TransformResult,
   TypesenseQuery,
-} from "../core/types";
-import { resolveMappedField } from "../utils/resolve-mapped-field";
-import { formatTypesenseFilterValue } from "../utils/quote-value";
+} from "../core/types.js";
+import { resolveMappedField } from "../utils/resolve-mapped-field.js";
+import { formatTypesenseFilterValue } from "../utils/quote-value.js";
 
 /**
  * Interface for Elasticsearch term query

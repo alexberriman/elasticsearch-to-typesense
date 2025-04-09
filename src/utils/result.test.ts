@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ok, err, isOk, isErr } from "./result";
+import { ok, err, isOk, isErr } from "./result.js";
 
 describe("Result utility functions", () => {
   describe("ok", () => {

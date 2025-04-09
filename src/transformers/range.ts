@@ -2,11 +2,11 @@ import {
   TransformerContext,
   TransformResult,
   TypesenseQuery,
-} from "../core/types";
-import { resolveReservedKeyword } from "../utils/handle-reserved-keywords";
-import { resolveMappedField } from "../utils/resolve-mapped-field";
-import { formatTypesenseFilterValue } from "../utils/quote-value";
-import { coerceValueFromSchema } from "../utils/coerce-value-from-schema";
+} from "../core/types.js";
+import { resolveReservedKeyword } from "../utils/handle-reserved-keywords.js";
+import { resolveMappedField } from "../utils/resolve-mapped-field.js";
+import { formatTypesenseFilterValue } from "../utils/quote-value.js";
+import { coerceValueFromSchema } from "../utils/coerce-value-from-schema.js";
 
 export const transformRange = (
   range: Record<string, any>,

@@ -2,8 +2,8 @@ import {
   TransformerContext,
   TransformResult,
   TypesenseQuery,
-} from "../core/types";
-import { resolveMappedField } from "../utils/resolve-mapped-field";
+} from "../core/types.js";
+import { resolveMappedField } from "../utils/resolve-mapped-field.js";
 
 /**
  * Interface for Elasticsearch prefix query

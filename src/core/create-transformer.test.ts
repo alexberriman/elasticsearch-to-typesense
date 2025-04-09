@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import { createTransformer } from "./create-transformer";
-import { ResultMapper, TransformerOptions } from "./types";
-import * as autoMapping from "../utils/apply-auto-mapping";
-import * as transformer from "./transformer";
-import * as transformHints from "../utils/suggest-transform-hints";
-import * as common from "../transformers/common";
-import * as mapResultsModule from "../utils/map-results-to-elastic";
+import { createTransformer } from "./create-transformer.js";
+import { ResultMapper, TransformerOptions } from "./types.js";
+import * as autoMapping from "../utils/apply-auto-mapping.js";
+import * as transformer from "./transformer.js";
+import * as transformHints from "../utils/suggest-transform-hints.js";
+import * as common from "../transformers/common.js";
+import * as mapResultsModule from "../utils/map-results-to-elastic.js";
 
 vi.mock("../utils/apply-auto-mapping", () => ({
   applyAutoMapping: vi.fn(),

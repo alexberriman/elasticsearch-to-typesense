@@ -1,4 +1,4 @@
-import { TypesenseSchema } from "../core/types";
+import { TypesenseSchema } from "../core/types.js";
 
 export const isReservedKeyword = (value: unknown): value is string =>
   typeof value === "string" && value.toLowerCase() === "now";
@@ -10,10 +10,10 @@ export const resolveReservedKeyword = (
 ): unknown => {
   if (!isReservedKeyword(value)) return value;
 
-  if (!typesenseSchema) return value;
+  if (typesenseSchema === undefined) return value;
 
   const tsField = typesenseSchema.fields.find((f) => f.name === field);
-  if (!tsField) return value;
+  if (tsField === undefined) return value;
 
   switch (tsField.type) {
     case "int32":

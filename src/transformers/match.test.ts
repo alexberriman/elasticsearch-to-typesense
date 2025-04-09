@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { transformMatch } from "./match";
-import { TransformerContext } from "../core/types";
-import * as resolveFieldModule from "../utils/resolve-mapped-field";
+import { transformMatch } from "./match.js";
+import { TransformerContext } from "../core/types.js";
+import * as resolveFieldModule from "../utils/resolve-mapped-field.js";
 
 describe("transformMatch", () => {
   const createContext = (propertyMapping = {}): TransformerContext => ({

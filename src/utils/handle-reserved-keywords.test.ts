@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 import {
   isReservedKeyword,
   resolveReservedKeyword,
-} from "./handle-reserved-keywords";
-import { TypesenseSchema } from "../core/types";
+} from "./handle-reserved-keywords.js";
+import { TypesenseSchema } from "../core/types.js";
 
 describe("isReservedKeyword", () => {
   it("should identify 'now' as a reserved keyword", () => {
