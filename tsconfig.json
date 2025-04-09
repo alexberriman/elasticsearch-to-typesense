@@ -4,13 +4,13 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "declaration": true,
-    "outDir": "./dist/types",
-    "declarationDir": "./dist/types",
+    "outDir": "./dist",
     "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "emitDeclarationOnly": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "tests", "**/*.test.ts", "**/*.spec.ts"]

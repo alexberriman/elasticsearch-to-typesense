@@ -4,20 +4,26 @@
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/index.js" 
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
     }
   },
   "scripts": {
-    "build": "npm run build:types && npm run build:esm && npm run build:cjs",
+    "build": "npm run build:clean",
+    "build:clean": "rm -rf dist && npm run build:types && npm run build:esm && npm run build:cjs && npm run add-package-jsons",
     "build:types": "tsc -p tsconfig.json",
-    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:esm": "tsc -p tsconfig.esm.json", 
     "build:cjs": "tsc -p tsconfig.cjs.json",
-    "build:clean": "rm -rf dist && npm run build",
+    "add-package-jsons": "mkdir -p dist/cjs dist/esm && echo '{\"type\":\"module\"}' > dist/esm/package.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "test:integration": "vitest --config vitest.integration.config.ts run",
@@ -26,7 +32,6 @@
     "lint:tests": "eslint 'src/**/*.test.ts' 'tests/**/*.ts'",
     "lint:all": "eslint '**/*.ts'",
     "lint:fix": "eslint '**/*.ts' --fix",
-    "fix:imports": "node scripts/add-js-extensions.js",
     "type-check": "tsc --noEmit",
     "type-check:tests": "tsc -p tsconfig.test.json --noEmit",
     "format": "prettier --write 'src/**/*.{js,ts}'",
@@ -57,6 +62,7 @@
     "README.md",
     "LICENSE"
   ],
+  "sideEffects": false,
   "devDependencies": {
     "@semantic-release/git": "^10.0.1",
     "@types/node": "^22.14.0",
