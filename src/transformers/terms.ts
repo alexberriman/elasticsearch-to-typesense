@@ -5,6 +5,7 @@ import {
 } from "../core/types.js";
 import { resolveMappedField } from "../utils/resolve-mapped-field.js";
 import { formatTypesenseFilterValue } from "../utils/quote-value.js";
+import { applyValueTransformer } from "../utils/apply-value-transformer.js";
 
 // Type should be correctly defined as Record<string, Array<string|number|boolean>>
 // to match the actual usage in tests
@@ -30,9 +31,19 @@ export const transformTerms = (
         continue;
       }
 
-      // Use the formatTypesenseFilterValue utility directly on the array
+      // Apply value transformer if provided to each item in the array
+      const transformedValues = values.map((value) =>
+        applyValueTransformer({
+          elasticField: field,
+          typesenseField: mapped,
+          value,
+          ctx,
+        })
+      );
+
+      // Use the formatTypesenseFilterValue utility directly on the transformed array
       // This will properly format each element according to its type
-      const formattedValues = formatTypesenseFilterValue(values);
+      const formattedValues = formatTypesenseFilterValue(transformedValues);
 
       // Proper Typesense format for IN operator
       parts.push(`${mapped}:= ${formattedValues}`);

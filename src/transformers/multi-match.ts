@@ -4,6 +4,7 @@ import {
   TypesenseQuery,
 } from "../core/types.js";
 import { resolveMappedField } from "../utils/resolve-mapped-field.js";
+import { applyValueTransformer } from "../utils/apply-value-transformer.js";
 
 interface MultiMatchQuery {
   fields: string[];
@@ -73,8 +74,24 @@ export const transformMultiMatch = (
   // Add dynamic parameters that aren't part of the TypesenseQuery type
   const dynamicParams: Record<string, any> = {};
 
+  // Apply value transformer to the query text if provided
+  // For multi-match, we apply it with the first mapped field (or null if none)
+  const queryField = mappedFields.length > 0 ? mappedFields[0] : null;
+  const elasticField = fields.length > 0 ? fields[0].split("^")[0] : null;
+
+  // Transform the query value
+  const transformedQuery =
+    elasticField !== null && queryField !== null
+      ? applyValueTransformer({
+          elasticField,
+          typesenseField: queryField,
+          value: query,
+          ctx,
+        })
+      : query;
+
   // Set the query text
-  typesenseQuery.q = query;
+  typesenseQuery.q = transformedQuery;
 
   // Handle query_by and query_by_weights
   dynamicParams.query_by = mappedFields.join(",");

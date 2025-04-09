@@ -164,6 +164,30 @@ describe("createTransformer", () => {
       );
     });
 
+    it("should pass valueTransformer to transformer context", () => {
+      const mockPagination = { query: {}, warnings: [] };
+      const mockTransform = { query: {}, warnings: [] };
+
+      vi.mocked(transformer.transformQueryRecursively).mockReturnValue(
+        mockTransform
+      );
+      vi.mocked(common.createPaginationAndSort).mockReturnValue(mockPagination);
+
+      const valueTransformer = (field: string, value: any) => value;
+
+      const transformerInstance = createTransformer({
+        valueTransformer,
+      });
+      transformerInstance.transform({ query: {} });
+
+      expect(transformer.transformQueryRecursively).toHaveBeenCalledWith(
+        {},
+        expect.objectContaining({
+          valueTransformer,
+        })
+      );
+    });
+
     it("should not generate hints when autoMapProperties is false", () => {
       vi.mocked(transformer.transformQueryRecursively).mockReturnValue({
         query: { q: "*" },

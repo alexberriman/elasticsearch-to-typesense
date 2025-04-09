@@ -36,6 +36,7 @@ export const createTransformer = (opts: TransformerOptions) => {
     typesenseSchema: opts.typesenseSchema,
     elasticSchema: opts.elasticSchema,
     defaultScoreField: opts.defaultScoreField,
+    valueTransformer: opts.valueTransformer,
   };
 
   /**

@@ -4,6 +4,7 @@ import {
   TypesenseQuery,
 } from "../core/types.js";
 import { resolveMappedField as resolveField } from "../utils/resolve-mapped-field.js";
+import { applyValueTransformer } from "../utils/apply-value-transformer.js";
 
 interface GeoDistanceQuery {
   distance: string;
@@ -49,6 +50,7 @@ export const transformGeoDistance = (
   let geoField = "";
   let latValue = 0;
   let lonValue = 0;
+  let mappedField = ""; // Store the mapped field name
 
   for (const key in query) {
     if (
@@ -59,8 +61,46 @@ export const transformGeoDistance = (
       const geoPoint = query[key] as { lat?: number; lon?: number };
 
       if (typeof geoPoint === "object" && geoPoint !== null) {
-        latValue = typeof geoPoint.lat === "number" ? geoPoint.lat : 0;
-        lonValue = typeof geoPoint.lon === "number" ? geoPoint.lon : 0;
+        // Resolve the mapped field name and store it
+        const resolved = resolveField(geoField, ctx);
+        mappedField =
+          resolved !== undefined && resolved !== null ? resolved : "";
+
+        // Get the original values
+        const originalLat =
+          typeof geoPoint.lat === "number" || typeof geoPoint.lat === "string"
+            ? geoPoint.lat
+            : 0;
+        const originalLon =
+          typeof geoPoint.lon === "number" || typeof geoPoint.lon === "string"
+            ? geoPoint.lon
+            : 0;
+
+        // Transform values if transformer exists
+        const transformedLat = applyValueTransformer({
+          elasticField: `${geoField}.lat`,
+          typesenseField: `${mappedField}.lat`,
+          value: originalLat,
+          ctx,
+        });
+
+        const transformedLon = applyValueTransformer({
+          elasticField: `${geoField}.lon`,
+          typesenseField: `${mappedField}.lon`,
+          value: originalLon,
+          ctx,
+        });
+
+        // Convert to number
+        latValue =
+          typeof transformedLat === "number"
+            ? transformedLat
+            : parseFloat(String(transformedLat)) || 0;
+
+        lonValue =
+          typeof transformedLon === "number"
+            ? transformedLon
+            : parseFloat(String(transformedLon)) || 0;
       }
     }
   }
@@ -72,17 +112,21 @@ export const transformGeoDistance = (
     };
   }
 
-  const resolvedField = resolveField(geoField, ctx);
-  if (resolvedField === undefined || resolvedField === null) {
-    warnings.push(`Skipped unmapped geo-distance field "${geoField}"`);
+  // If no mappedField was set during the loop, try to resolve it now
+  if (!mappedField) {
+    const resolved = resolveField(geoField, ctx);
+    mappedField = resolved !== undefined && resolved !== null ? resolved : "";
+  }
 
+  if (mappedField === "") {
+    warnings.push(`Skipped unmapped geo-distance field "${geoField}"`);
     return {
       query: {},
       warnings,
     };
   }
 
-  const filterBy = `${resolvedField}:(${latValue}, ${lonValue}, ${radiusKm} km)`;
+  const filterBy = `${mappedField}:(${latValue}, ${lonValue}, ${radiusKm} km)`;
 
   return {
     query: { filter_by: filterBy },
