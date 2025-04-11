@@ -197,9 +197,16 @@ const processSubQueries = (
   queries: unknown[],
   ctx: TransformerContext,
   isNegated: boolean
-): { subFilterSet: Set<string>; warnings: string[] } => {
+): {
+  subFilterSet: Set<string>;
+  warnings: string[];
+  searchQueries: string[];
+  searchParams: Record<string, any>[];
+} => {
   const subFilterSet: Set<string> = new Set();
   const warnings: string[] = [];
+  const searchQueries: string[] = [];
+  const searchParams: Record<string, any>[] = [];
 
   for (const q of queries) {
     const sub = transformQueryRecursively(q, { ...ctx, negated: isNegated });
@@ -211,10 +218,32 @@ const processSubQueries = (
       subFilterSet.add(`(${sub.query.filter_by})`);
     }
 
+    // Collect search queries and their parameters
+    if (typeof sub.query.q === "string" && sub.query.q !== "*") {
+      searchQueries.push(sub.query.q);
+
+      // Extract search-related parameters
+      const params: Record<string, any> = {};
+      for (const [key, value] of Object.entries(sub.query)) {
+        if (
+          key !== "q" &&
+          key !== "filter_by" &&
+          key !== "sort_by" &&
+          value !== undefined
+        ) {
+          params[key] = value;
+        }
+      }
+
+      if (Object.keys(params).length > 0) {
+        searchParams.push(params);
+      }
+    }
+
     warnings.push(...sub.warnings);
   }
 
-  return { subFilterSet, warnings };
+  return { subFilterSet, warnings, searchQueries, searchParams };
 };
 
 // Process a specific clause type in the bool query
@@ -222,16 +251,22 @@ const processBoolClause = (
   queries: unknown[] | undefined,
   ctx: TransformerContext,
   clauseType: "must" | "should" | "must_not" | "filter"
-): { filter: string | null; warnings: string[] } => {
+): {
+  filter: string | null;
+  warnings: string[];
+  searchQueries: string[];
+  searchParams: Record<string, any>[];
+} => {
   if (!Array.isArray(queries) || queries.length === 0) {
-    return { filter: null, warnings: [] };
+    return { filter: null, warnings: [], searchQueries: [], searchParams: [] };
   }
 
   const isNegated = clauseType === "must_not";
-  const { subFilterSet, warnings } = processSubQueries(queries, ctx, isNegated);
+  const { subFilterSet, warnings, searchQueries, searchParams } =
+    processSubQueries(queries, ctx, isNegated);
 
   if (subFilterSet.size === 0) {
-    return { filter: null, warnings };
+    return { filter: null, warnings, searchQueries, searchParams };
   }
 
   if (clauseType === "must_not") {
@@ -240,13 +275,23 @@ const processBoolClause = (
     warnings.push(...negationWarnings);
 
     if (clausesToNegate.length === 0) {
-      return { filter: null, warnings };
+      return { filter: null, warnings, searchQueries, searchParams };
     }
 
-    return { filter: `(${clausesToNegate.join(" && ")})`, warnings };
+    return {
+      filter: `(${clausesToNegate.join(" && ")})`,
+      warnings,
+      searchQueries,
+      searchParams,
+    };
   } else {
     const operator = clauseType === "should" ? " || " : " && ";
-    return { filter: `(${[...subFilterSet].join(operator)})`, warnings };
+    return {
+      filter: `(${[...subFilterSet].join(operator)})`,
+      warnings,
+      searchQueries,
+      searchParams,
+    };
   }
 };
 
@@ -280,11 +325,44 @@ export const transformBool = (
 
   const warnings = results.flatMap((result) => result.warnings);
 
+  // Collect all search queries from different clauses
+  const allSearchQueries = results.flatMap((result) => result.searchQueries);
+
+  // Collect all search parameters from different clauses
+  const allSearchParams = results.flatMap((result) => result.searchParams);
+
   // Join filters with AND and normalize parentheses
   const filterBy = normalizeParentheses(filters.join(" && "));
 
+  // Build the TypesenseQuery
+  const query: Partial<TypesenseQuery> = { filter_by: filterBy };
+
+  // If we found any search queries, use the first one
+  if (allSearchQueries.length > 0) {
+    query.q = allSearchQueries[0];
+
+    // Merge search parameters from all queries
+    // If there are multiple values for the same parameter, use the first one
+    // This is a simplistic approach - in a real implementation, we might want to be more sophisticated
+    if (allSearchParams.length > 0) {
+      const mergedParams: Record<string, any> = {};
+
+      for (const params of allSearchParams) {
+        for (const [key, value] of Object.entries(params)) {
+          // Only set if not already set
+          if (mergedParams[key] === undefined) {
+            mergedParams[key] = value;
+          }
+        }
+      }
+
+      // Add all the merged params to the query
+      Object.assign(query, mergedParams);
+    }
+  }
+
   return {
-    query: { filter_by: filterBy },
+    query,
     warnings,
   };
 };

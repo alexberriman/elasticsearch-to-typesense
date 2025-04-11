@@ -38,14 +38,20 @@ export const transformFunctionScore = (
     warnings.push("function_score.functions are not supported in Typesense");
   }
 
+  // Build the query by including all parameters from the base query
+  const query: Partial<TypesenseQuery> = { ...base.query };
+
+  // If filter_by exists and isn't empty, wrap it in parentheses
+  if (typeof query.filter_by === "string" && query.filter_by.length > 0) {
+    query.filter_by = `(${query.filter_by})`;
+  } else if (query.filter_by === "") {
+    // If it's an empty string, set it to undefined
+    // This ensures consistent behavior with the existing tests
+    query.filter_by = undefined;
+  }
+
   return {
-    query: {
-      filter_by:
-        typeof base.query.filter_by === "string" &&
-        base.query.filter_by.length > 0
-          ? `(${base.query.filter_by})`
-          : undefined,
-    },
+    query,
     warnings,
   };
 };

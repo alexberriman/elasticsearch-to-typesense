@@ -71,6 +71,16 @@ describe("integration", () => {
 
       const typesenseQuery = result.value.query;
 
+      if (testIndex !== undefined) {
+        // individiual test
+        console.info(
+          `Original elasticsearch query:\n${JSON.stringify(query, undefined, 2)}`
+        );
+        console.info(
+          `\nTransformed typesense query:\n${JSON.stringify(typesenseQuery, undefined, 2)}`
+        );
+      }
+
       try {
         let queryToExecute = { ...typesenseQuery };
         const searchResults = await typesenseClient
