@@ -198,4 +198,68 @@ describe("createPaginationAndSort", () => {
     });
     expect(result.warnings).toEqual(["Geo warning"]);
   });
+
+  it("handles invalid size parameter", () => {
+    const input = {
+      size: -5,
+    };
+
+    const result = createPaginationAndSort(input, createContext());
+
+    expect(result.query).toEqual({
+      per_page: 10,
+    });
+    expect(result.warnings).toEqual([
+      "Invalid size parameter: -5, using default: 10",
+    ]);
+  });
+
+  it("handles non-numeric size parameter", () => {
+    const input = {
+      size: "invalid",
+    };
+
+    const result = createPaginationAndSort(input, createContext());
+
+    expect(result.query).toEqual({
+      per_page: 10,
+    });
+    expect(result.warnings).toEqual([
+      "Invalid size parameter: invalid, using default: 10",
+    ]);
+  });
+
+  it("handles invalid from parameter", () => {
+    const input = {
+      from: -10,
+      size: 10,
+    };
+
+    const result = createPaginationAndSort(input, createContext());
+
+    expect(result.query).toEqual({
+      per_page: 10,
+      page: 1,
+    });
+    expect(result.warnings).toEqual([
+      "Invalid page calculation: 0, using default: 1",
+    ]);
+  });
+
+  it("handles non-numeric from parameter", () => {
+    const input = {
+      from: "invalid",
+      size: 10,
+    };
+
+    const result = createPaginationAndSort(input, createContext());
+
+    expect(result.query).toEqual({
+      per_page: 10,
+      page: 1,
+    });
+    expect(result.warnings).toEqual([
+      "Invalid from parameter: invalid, using default page: 1",
+    ]);
+  });
 });
