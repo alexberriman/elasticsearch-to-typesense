@@ -45,6 +45,11 @@ const transformer = createTransformer({
     'another_field': 'mapped_field'
   }
 });
+
+// The transformer provides these functions:
+transformer.transform(elasticsearchQuery); // Transform ES query to Typesense
+transformer.extend({ /* additional options */ }); // Create a new transformer with extended options
+transformer.options; // Access the readonly options used to create this transformer
 ```
 
 ## Example Usage
@@ -349,6 +354,43 @@ The `createTransformer` function accepts the following options:
 | `defaultScoreField` | `string` | Default field to use for scoring/relevance when no sorting is specified. | `_text_match:desc` |
 | `valueTransformer` | `(field: string, value: any, context: object) => any` | Optional function to transform field values from Elasticsearch to Typesense. Useful when values differ between systems (e.g., case sensitivity differences). Receives the field name, value, and context object with schema information. | `undefined` |
 | `mapResultsToElasticSchema` | `(documents: any \| any[]) => any \| any[] \| Promise<any \| any[]>` | Optional function to map Typesense search results back to Elasticsearch format. When provided, the transformer will expose a `mapResults` function. If not provided but `propertyMapping` is set, a default mapping function will be created based on inverting the property mapping. | `undefined` |
+
+## Transformer API
+
+The transformer instance returned by `createTransformer` provides the following:
+
+| Property/Method | Description |
+|-----------------|-------------|
+| `transform(elasticsearchQuery)` | Transforms an Elasticsearch query into a Typesense query. Returns a `Result` with either the transformed query or an error. |
+| `extend(additionalOptions)` | Creates a new transformer instance by merging the original options with the provided additional options. This is useful for creating specialized transformers from a base transformer. |
+| `options` | A readonly copy of the configuration options used to create this transformer. |
+| `mapResults` | (Optional) If a mapping function was provided or derived from property mappings, this function maps Typesense results back to Elasticsearch format. |
+
+### Extending a Transformer
+
+You can create specialized transformers by extending a base transformer:
+
+```typescript
+// Create a base transformer with common settings
+const baseTransformer = createTransformer({
+  elasticSchema: commonElasticSchema,
+  typesenseSchema: commonTypesenseSchema,
+  autoMapProperties: true,
+});
+
+// Create a specialized transformer for a specific use case
+const productSearchTransformer = baseTransformer.extend({
+  defaultScoreField: 'popularity:desc',
+  propertyMapping: {
+    // Add additional field mappings specific to product search
+    'product_score': 'popularity',
+  },
+});
+
+// Options are merged, so productSearchTransformer will have both 
+// the auto-mapped properties and the additional mappings
+console.log(productSearchTransformer.options.propertyMapping);
+```
 
 ## Typesense Query Parameters
 

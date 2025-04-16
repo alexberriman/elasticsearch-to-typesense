@@ -37,6 +37,14 @@ describe("createTransformer", () => {
     expect(transformer).toHaveProperty("transform");
     expect(typeof transformer.transform).toBe("function");
     expect(transformer).not.toHaveProperty("mapResults");
+    expect(transformer).toHaveProperty("extend");
+    expect(typeof transformer.extend).toBe("function");
+    expect(transformer).toHaveProperty("options");
+    expect(transformer.options).toEqual({
+      propertyMapping: {},
+      typesenseSchema: undefined,
+      elasticSchema: undefined,
+    });
   });
 
   it("should use provided propertyMapping when autoMapProperties is false", () => {
@@ -207,6 +215,107 @@ describe("createTransformer", () => {
     });
   });
 
+  describe("extend method", () => {
+    it("should create a new transformer with merged options", () => {
+      // Create initial transformer
+      const initialOptions: TransformerOptions = {
+        propertyMapping: { field1: "mappedField1" },
+        defaultScoreField: "score",
+      };
+
+      const transformer = createTransformer(initialOptions);
+
+      // Extend with new options
+      const extendedOptions: Partial<TransformerOptions> = {
+        propertyMapping: { field2: "mappedField2" },
+        defaultQueryString: "*",
+      };
+
+      const extendedTransformer = transformer.extend(extendedOptions);
+
+      // Verify it's a new instance
+      expect(extendedTransformer).not.toBe(transformer);
+
+      // Verify extended transformer has correct properties
+      expect(extendedTransformer).toHaveProperty("transform");
+      expect(extendedTransformer).toHaveProperty("extend");
+
+      // Verify extended transformer has option values merged correctly
+      expect(extendedTransformer).toHaveProperty("options");
+      expect(extendedTransformer.options).toEqual({
+        propertyMapping: { field1: "mappedField1", field2: "mappedField2" },
+        defaultScoreField: "score",
+        defaultQueryString: "*",
+      });
+
+      // Original transformer's options should remain unchanged
+      expect(transformer.options).toEqual({
+        propertyMapping: { field1: "mappedField1" },
+        defaultScoreField: "score",
+      });
+    });
+
+    it("should preserve mapResults when extending", () => {
+      const customMapper: ResultMapper = (doc) => ({ mapped: true, doc });
+
+      const transformer = createTransformer({
+        mapResultsToElasticSchema: customMapper,
+      });
+
+      const extendedTransformer = transformer.extend({
+        defaultScoreField: "score",
+      });
+
+      expect(extendedTransformer).toHaveProperty("mapResults");
+      expect(typeof extendedTransformer.mapResults).toBe("function");
+    });
+
+    it("should properly merge property mappings when extending", () => {
+      // Set up createDefaultMapper mock
+      const mockMapperInitial = vi.fn((doc) => ({ initial: true, doc }));
+      const mockMapperExtended = vi.fn((doc) => ({ extended: true, doc }));
+
+      // First call should return the initial mapper
+      // Second call should return the extended mapper
+      vi.mocked(mapResultsModule.createDefaultMapper)
+        .mockReturnValueOnce(mockMapperInitial)
+        .mockReturnValueOnce(mockMapperExtended);
+
+      // Create initial transformer with property mapping
+      const initialTransformer = createTransformer({
+        propertyMapping: { field1: "mapped1" },
+      });
+
+      // Extend with additional property mappings
+      const extendedTransformer = initialTransformer.extend({
+        propertyMapping: { field2: "mapped2" },
+      });
+
+      // Both should have mapResults and options
+      expect(initialTransformer).toHaveProperty("mapResults");
+      expect(extendedTransformer).toHaveProperty("mapResults");
+
+      // Verify options reflect the merged property mappings
+      expect(initialTransformer.options.propertyMapping).toEqual({
+        field1: "mapped1",
+      });
+      expect(extendedTransformer.options.propertyMapping).toEqual({
+        field1: "mapped1",
+        field2: "mapped2",
+      });
+
+      // createDefaultMapper should have been called twice with different mappings
+      expect(mapResultsModule.createDefaultMapper).toHaveBeenCalledTimes(2);
+      expect(mapResultsModule.createDefaultMapper).toHaveBeenNthCalledWith(1, {
+        field1: "mapped1",
+      });
+      expect(mapResultsModule.createDefaultMapper).toHaveBeenNthCalledWith(2, {
+        field1: "mapped1",
+        field2: "mapped2",
+      });
+    });
+  });
+
   describe("mapResults method", () => {
     it("should include mapResults function when custom mapper is provided", () => {
       const customMapper: ResultMapper = (doc) => ({ mapped: true, doc });
@@ -217,6 +326,7 @@ describe("createTransformer", () => {
 
       expect(transformer).toHaveProperty("mapResults");
       expect(transformer.mapResults).toBe(customMapper);
+      expect(transformer).toHaveProperty("extend");
 
       // Test mapper works
       const result = transformer.mapResults({ field: "value" });
@@ -233,6 +343,7 @@ describe("createTransformer", () => {
       const transformer = createTransformer({ propertyMapping });
 
       expect(transformer).toHaveProperty("mapResults");
+      expect(transformer).toHaveProperty("extend");
       expect(mapResultsModule.createDefaultMapper).toHaveBeenCalledWith(
         propertyMapping
       );
@@ -248,6 +359,7 @@ describe("createTransformer", () => {
     it("should not include mapResults function with no mapping information", () => {
       const transformer = createTransformer({});
       expect(transformer).not.toHaveProperty("mapResults");
+      expect(transformer).toHaveProperty("extend");
     });
 
     it("should support async mapping functions", async () => {
@@ -260,6 +372,7 @@ describe("createTransformer", () => {
       });
 
       expect(transformer).toHaveProperty("mapResults");
+      expect(transformer).toHaveProperty("extend");
 
       const resultPromise = transformer.mapResults({ field: "value" });
       expect(resultPromise).toBeInstanceOf(Promise);
@@ -282,6 +395,8 @@ describe("createTransformer", () => {
       const transformer = createTransformer({
         mapResultsToElasticSchema: customMapper,
       });
+
+      expect(transformer).toHaveProperty("extend");
 
       const docs = [{ id: 1 }, { id: 2 }];
       const result = transformer.mapResults(docs);
