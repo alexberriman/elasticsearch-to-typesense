@@ -12,9 +12,13 @@ export const createPaginationAndSort = (
   const from = input.from;
   const size = input.size;
 
-  if (typeof size === "number") {
-    // Typesense has a maximum limit of 250 for per_page
-    const maxPerPage = 250;
+  // Default pagination values
+  const defaultPerPage = 10;
+  const defaultPage = 1;
+  const maxPerPage = 250;
+
+  // Handle per_page parameter (from size)
+  if (typeof size === "number" && size > 0) {
     if (size > maxPerPage) {
       warnings.push(
         `Reducing page size from ${size} to ${maxPerPage} (Typesense limit)`
@@ -23,9 +27,29 @@ export const createPaginationAndSort = (
     } else {
       query.per_page = size;
     }
+  } else if (size !== undefined) {
+    warnings.push(
+      `Invalid size parameter: ${size}, using default: ${defaultPerPage}`
+    );
+    query.per_page = defaultPerPage;
   }
-  if (typeof from === "number" && typeof size === "number") {
-    query.page = Math.floor(from / size) + 1;
+
+  // Handle page parameter (from from/size)
+  if (typeof from === "number" && typeof size === "number" && size > 0) {
+    const calculatedPage = Math.floor(from / size) + 1;
+    if (calculatedPage > 0) {
+      query.page = calculatedPage;
+    } else {
+      warnings.push(
+        `Invalid page calculation: ${calculatedPage}, using default: ${defaultPage}`
+      );
+      query.page = defaultPage;
+    }
+  } else if (from !== undefined && (typeof from !== "number" || from < 0)) {
+    warnings.push(
+      `Invalid from parameter: ${from}, using default page: ${defaultPage}`
+    );
+    query.page = defaultPage;
   }
 
   const sort = input.sort;
