@@ -81,11 +81,49 @@ export const createTransformer = (opts: TransformerOptions) => {
     });
   };
 
+  /**
+   * Extends the transformer with new options
+   *
+   * @param extendedOptions - Partial options to merge with the original options
+   * @returns A new transformer instance with merged options
+   */
+  const extend = (extendedOptions: Partial<TransformerOptions>) => {
+    // Merge the original options with the extended options
+    const mergedOptions: TransformerOptions = {
+      ...opts,
+      ...extendedOptions,
+      // If both have propertyMapping, merge them
+      propertyMapping: {
+        ...(opts.propertyMapping || {}),
+        ...(extendedOptions.propertyMapping || {}),
+      },
+    };
+
+    return createTransformer(mergedOptions);
+  };
+
+  // Create a deep copy of options to expose as readonly
+  const options: Readonly<TransformerOptions> = {
+    ...opts,
+    propertyMapping: { ...propertyMapping },
+    typesenseSchema: opts.typesenseSchema
+      ? { ...opts.typesenseSchema }
+      : undefined,
+    elasticSchema: opts.elasticSchema ? { ...opts.elasticSchema } : undefined,
+  };
+
+  // Base transformer with transform, extend functions, and readonly options
+  const baseTransformer = {
+    transform,
+    extend,
+    options,
+  };
+
   // Determine if we should provide a mapResults function
   if (opts.mapResultsToElasticSchema !== undefined) {
     // Use the provided mapper function
     return {
-      transform,
+      ...baseTransformer,
       /**
        * Maps Typesense results back to Elasticsearch format
        *
@@ -102,7 +140,7 @@ export const createTransformer = (opts: TransformerOptions) => {
     const defaultMapper = createDefaultMapper(propertyMapping);
 
     return {
-      transform,
+      ...baseTransformer,
       /**
        * Maps Typesense results back to Elasticsearch format
        * Uses a default mapper based on inverting the property mapping
@@ -115,5 +153,5 @@ export const createTransformer = (opts: TransformerOptions) => {
   }
 
   // No mapping function provided and no property mapping available
-  return { transform };
+  return baseTransformer;
 };
